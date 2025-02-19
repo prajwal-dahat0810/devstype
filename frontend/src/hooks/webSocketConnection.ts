@@ -45,6 +45,7 @@ export function useWebSocket() {
       const handleUnload = () => {
         if (ws.readyState === WebSocket.OPEN) {
           ws.close();
+          window.location.href = "/signin";
         }
       };
 

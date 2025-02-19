@@ -6,6 +6,19 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 const saltRounds = 10;
 export const prisma = new PrismaClient();
+async function checkDatabaseConnection() {
+  try {
+    await prisma.$connect();
+    console.log("Prisma is connected to the database!");
+  } catch (error) {
+    console.error(" Prisma failed to connect to the database:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+checkDatabaseConnection();
+
 export const userRouter = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -110,6 +123,7 @@ userRouter.post(
             message: "User not exists",
           });
         }
+        console.log(isUserExist);
         const authenticated = await bcrypt.compare(
           password,
           isUserExist.password
@@ -134,6 +148,7 @@ userRouter.post(
           message: "User signin successfully!!!",
         });
       } catch (e) {
+        console.log(e);
         return res.status(500).json({
           message: "User signin fails!!!",
           error: e,
