@@ -164,8 +164,12 @@ userRouter.get("/logout", async (req: Request, res: Response): Promise<any> => {
         message: "Player unauthorized!!!",
       });
     }
-
-    res.clearCookie("token");
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/",
+    });
     return res.status(200).json({
       message: "Player logout successfully!!!",
     });
