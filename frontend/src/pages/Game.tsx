@@ -142,7 +142,7 @@ export default function Game() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setInterval>;
     if (isTyping) {
       interval = setInterval(() => {
         setTimer((prev) => prev + 1);
