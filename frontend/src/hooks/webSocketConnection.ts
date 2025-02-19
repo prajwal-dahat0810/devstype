@@ -101,7 +101,7 @@ export function useWebSocket() {
         const res = await axios.get(`${BACKEND_URL}/refresh`, {
           withCredentials: true, // Ensures cookies are sent
         });
-
+        console.log(res.data);
         if (res.data.token) {
           setToken(res.data.token);
         } else {

@@ -41,10 +41,10 @@ export default function Landing() {
         console.log("error");
         console.log(error);
 
-        window.location.href = "/signin";
-        if (error.response.request.status === 401) {
-          window.location.href = "/signin";
-        }
+        // window.location.href = "/signin";
+        // if (error.response.request.status === 401) {
+        //   window.location.href = "/signin";
+        // }
       });
   }, [setSocket]);
 
