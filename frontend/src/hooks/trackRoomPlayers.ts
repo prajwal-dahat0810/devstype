@@ -6,9 +6,8 @@ export const useTrackRoomPlayers = (socket: WebSocket | null) => {
   const [room, setRoom] = useRecoilState(roomAtom);
   useEffect(() => {
     if (!room) return;
-    const handleMessage = (event: MessageEvent) => {
-      const { data } = JSON.parse(event.data);
-      console.log(data);
+    const handleMessage = () => {
+      // const { data } = JSON.parse(event.data);
     };
     socket?.addEventListener("message", handleMessage);
     return () => {

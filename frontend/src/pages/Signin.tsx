@@ -2,11 +2,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL as string;
-import { Bounce, Slide, ToastContainer, toast } from "react-toastify";
+import { Bounce, ToastContainer, toast } from "react-toastify";
 import { ErrorAlert } from "../components/ui/ErrorAlert";
-import { error } from "console";
-import { ProcessingAlert } from "../components/ui/ProcessingAlert";
-import Navigation from "../components/Navigation";
 import { Footer } from "../components/Footer";
 export const contextClass = {
   success: "bg-blue-600",
@@ -17,29 +14,7 @@ export const contextClass = {
   dark: "bg-white-600 font-gray-300",
 };
 
-function CustomNotification({ closeToast, data, toastProps }: any) {
-  const isColored = toastProps.theme === "colored";
-
-  return (
-    <div className="flex flex-col w-full">
-      <h3
-      // className={cx(
-      //   "text-sm font-semibold",
-      //   isColored ? "text-white" : "text-zinc-800"
-      // )}
-      >
-        {data.title}
-      </h3>
-      <div className="flex items-center justify-between">
-        <p className="text-sm">{data.content}</p>
-        <button onClick={closeToast}>Try again</button>
-      </div>
-    </div>
-  );
-}
-
 export default function () {
-  console.log(BACKEND_URL);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [signupEmail, setSignupEmail] = useState<string>("");
@@ -67,12 +42,9 @@ export default function () {
       signupPassword.length <= 5 ||
       userName === ""
     ) {
-      console.log("something", signupEmail);
       if (userName === "") {
         const loadId = toast.error(
-          ({ closeToast }) => (
-            <ErrorAlert data={{ content: "Enter correct username" }} />
-          ),
+          () => <ErrorAlert data={{ content: "Enter correct username" }} />,
           {
             autoClose: 3000,
             progress: 0.3,
@@ -87,9 +59,7 @@ export default function () {
       }
       if (signupEmail === "") {
         const loadId = toast.error(
-          ({ closeToast }) => (
-            <ErrorAlert data={{ content: "Enter valid email" }} />
-          ),
+          () => <ErrorAlert data={{ content: "Enter valid email" }} />,
           {
             autoClose: 3000,
             progress: 0.3,
@@ -165,9 +135,6 @@ export default function () {
         }
       );
 
-      console.log(response.status);
-      // toast.dismiss(loadId);
-
       if (
         response.data.status === 401 ||
         response.data.status === 400 ||
@@ -188,9 +155,7 @@ export default function () {
 
         return;
       }
-      console.log("success");
       if (response.status === 200) {
-        console.log("in data");
         setSignupEmail("");
         setSignupPassword("");
         setUsername("");
@@ -219,7 +184,6 @@ export default function () {
         });
       }
     } catch (error: any) {
-      console.log(error);
       toast.dismiss();
       if (error.response)
         if (
@@ -257,9 +221,7 @@ export default function () {
     if (email === "" || password === "" || password.length <= 5) {
       if (email === "") {
         const loadId = toast.error(
-          ({ closeToast }) => (
-            <ErrorAlert data={{ content: "Enter correct Email" }} />
-          ),
+          () => <ErrorAlert data={{ content: "Enter correct Email" }} />,
           {
             autoClose: 3000,
             progress: 0.3,
@@ -334,7 +296,6 @@ export default function () {
         }
       );
 
-      console.log(response.status);
       // toast.dismiss(loadId);
 
       if (
@@ -356,7 +317,6 @@ export default function () {
         );
         return;
       }
-      console.log(response);
       if (response.status === 200) {
         toast.dismiss(loadId);
         toast.dark("Signin successfully !", {
@@ -374,7 +334,6 @@ export default function () {
         navigate("/");
       }
     } catch (error: any) {
-      console.log(error);
       toast.dismiss();
       if (error.response)
         if (
@@ -486,14 +445,14 @@ export default function () {
                   className="size-5"
                 >
                   <path
-                    fill-rule="evenodd"
+                    fillRule="evenodd"
                     d="M17 4.25A2.25 2.25 0 0 0 14.75 2h-5.5A2.25 2.25 0 0 0 7 4.25v2a.75.75 0 0 0 1.5 0v-2a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 .75.75v11.5a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-2a.75.75 0 0 0-1.5 0v2A2.25 2.25 0 0 0 9.25 18h5.5A2.25 2.25 0 0 0 17 15.75V4.25Z"
-                    clip-rule="evenodd"
+                    clipRule="evenodd"
                   />
                   <path
-                    fill-rule="evenodd"
+                    fillRule="evenodd"
                     d="M1 10a.75.75 0 0 1 .75-.75h9.546l-1.048-.943a.75.75 0 1 1 1.004-1.114l2.5 2.25a.75.75 0 0 1 0 1.114l-2.5 2.25a.75.75 0 1 1-1.004-1.114l1.048-.943H1.75A.75.75 0 0 1 1 10Z"
-                    clip-rule="evenodd"
+                    clipRule="evenodd"
                   />
                 </svg>
               </div>
@@ -525,14 +484,14 @@ export default function () {
                   className="size-5"
                 >
                   <path
-                    fill-rule="evenodd"
+                    fillRule="evenodd"
                     d="M17 4.25A2.25 2.25 0 0 0 14.75 2h-5.5A2.25 2.25 0 0 0 7 4.25v2a.75.75 0 0 0 1.5 0v-2a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 .75.75v11.5a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-2a.75.75 0 0 0-1.5 0v2A2.25 2.25 0 0 0 9.25 18h5.5A2.25 2.25 0 0 0 17 15.75V4.25Z"
-                    clip-rule="evenodd"
+                    clipRule="evenodd"
                   />
                   <path
-                    fill-rule="evenodd"
+                    fillRule="evenodd"
                     d="M1 10a.75.75 0 0 1 .75-.75h9.546l-1.048-.943a.75.75 0 1 1 1.004-1.114l2.5 2.25a.75.75 0 0 1 0 1.114l-2.5 2.25a.75.75 0 1 1-1.004-1.114l1.048-.943H1.75A.75.75 0 0 1 1 10Z"
-                    clip-rule="evenodd"
+                    clipRule="evenodd"
                   />
                 </svg>
               </div>

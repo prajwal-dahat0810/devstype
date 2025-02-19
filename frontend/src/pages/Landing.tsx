@@ -1,8 +1,8 @@
 import axios from "axios";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useWebSocket } from "../hooks/webSocketConnection";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { roomAtom, roomDataType } from "../store/atoms/testAtom";
 import Navigation from "../components/Navigation";
 import { socketAtom } from "../store/atoms/socketAtom";
@@ -15,13 +15,13 @@ export default function Landing() {
   const gameTypeOptions = ["Words"];
   const wordsOptions = [15];
   const alertRef: any = useRef(null);
-  const { soc }: any = useWebSocket();
+  const {}: any = useWebSocket();
   const [socket, setSocket] = useRecoilState(socketAtom);
   const [user, setUser] = useRecoilState(userAtom);
   const navigate = useNavigate();
   const [gameType, setGameType] = useState(gameTypeOptions[0]);
   const [wordsLimit, setWordsLimit] = useState(wordsOptions[0]);
-  const [room, setRoom] = useRecoilState(roomAtom);
+  const [, setRoom] = useRecoilState(roomAtom);
   const [roomInputId, setRoomInputId] = useState("");
   useEffect(() => {
     axios
@@ -29,53 +29,21 @@ export default function Landing() {
         withCredentials: true,
       })
       .then((response) => {
-        console.log(response.data);
         setUser({
           userName: response.data.user.userName,
           id: response.data.user.id,
           email: response.data.user.email,
         });
-        console.log("user Authorized");
       })
       .catch((error) => {
-        console.log("error");
-        console.log(error);
-
-        // window.location.href = "/signin";
-        // if (error.response.request.status === 401) {
-        //   window.location.href = "/signin";
-        // }
+        window.location.href = "/signin";
+        if (error.response.request.status === 401) {
+          window.location.href = "/signin";
+        }
       });
   }, [setSocket]);
 
-  // useEffect(() => {
-  //   const messageHandler = async function (event: { data: string }) {
-  //     const { event: eventName, data: data } = JSON.parse(event.data);
-  //     //// write a logic to only 10 player allow in a room
-  //     console.log("room-error", data.message);
-
-  //   };
-
-  //   soc?.addEventListener("message", messageHandler);
-
-  //   return () => {
-  //     socket?.removeEventListener("message", messageHandler);
-  //   };
-  // }, []);
-
-  // console.log(socket);
   const createRoom = () => {
-    // toast.dark("Room Created !", {
-    //   style: {
-    //     border: "2px solid #16a34a",
-    //     paddingInline: "10px",
-    //     paddingTop: 0,
-    //     paddingBottom: 0,
-    //     maxHeight: "min-content",
-    //     color: "#d1fae5",
-    //     backgroundColor: "#052e16",
-    //   },
-    // });
     const loadId = toast.loading("Creating Room...", {
       style: {
         border: "1px solid #22c55e",
@@ -97,8 +65,6 @@ export default function Landing() {
         toast.dismiss(loadId);
         const { event: eventName, data: data } = JSON.parse(event.data);
         if (eventName === "room-created") {
-          console.log("room created");
-          ///set room state
           toast.dark("Room Created !", {
             style: {
               border: "2px solid #3b82f6",
@@ -120,7 +86,6 @@ export default function Landing() {
             players: roomData.players,
           });
           navigate(`/room?gameType=${gameType}&wordsLimit=${wordsLimit}`);
-          console.log(room);
         }
       };
     }
@@ -227,7 +192,6 @@ export default function Landing() {
           return;
         }
         if (eventName === "room-error") {
-          console.log("room-error", data.message);
           alertRef.current = toast.error(
             data.message,
 

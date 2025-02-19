@@ -2,7 +2,6 @@ import "./App.css";
 import { RecoilRoot } from "recoil";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Layout } from "./components/Layout";
 import Landing from "./pages/Landing";
 import Signin from "./pages/Signin";
 import Room from "./pages/Room";

@@ -40,9 +40,9 @@ const units: unitType[] = [
         className="size-4"
       >
         <path
-          fill-rule="evenodd"
+          fillRule="evenodd"
           d="M9.493 2.852a.75.75 0 0 0-1.486-.204L7.545 6H4.198a.75.75 0 0 0 0 1.5h3.14l-.69 5H3.302a.75.75 0 0 0 0 1.5h3.14l-.435 3.148a.75.75 0 0 0 1.486.204L7.955 14h2.986l-.434 3.148a.75.75 0 0 0 1.486.204L12.456 14h3.346a.75.75 0 0 0 0-1.5h-3.14l.69-5h3.346a.75.75 0 0 0 0-1.5h-3.14l.435-3.148a.75.75 0 0 0-1.486-.204L12.045 6H9.059l.434-3.148ZM8.852 7.5l-.69 5h2.986l.69-5H8.852Z"
-          clip-rule="evenodd"
+          clipRule="evenodd"
         />
       </svg>
     ),
@@ -57,9 +57,9 @@ const units: unitType[] = [
         className="size-4"
       >
         <path
-          fill-rule="evenodd"
+          fillRule="evenodd"
           d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-13a.75.75 0 0 0-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 0 0 0-1.5h-3.25V5Z"
-          clip-rule="evenodd"
+          clipRule="evenodd"
         />
       </svg>
     ),
@@ -74,9 +74,9 @@ const units: unitType[] = [
         className="size-4"
       >
         <path
-          fill-rule="evenodd"
+          fillRule="evenodd"
           d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-          clip-rule="evenodd"
+          clipRule="evenodd"
         />
       </svg>
     ),
@@ -91,9 +91,9 @@ const units: unitType[] = [
         className="size-4"
       >
         <path
-          fill-rule="evenodd"
+          fillRule="evenodd"
           d="M19 5.5a4.5 4.5 0 0 1-4.791 4.49c-.873-.055-1.808.128-2.368.8l-6.024 7.23a2.724 2.724 0 1 1-3.837-3.837L9.21 8.16c.672-.56.855-1.495.8-2.368a4.5 4.5 0 0 1 5.873-4.575c.324.105.39.51.15.752L13.34 4.66a.455.455 0 0 0-.11.494 3.01 3.01 0 0 0 1.617 1.617c.17.07.363.02.493-.111l2.692-2.692c.241-.241.647-.174.752.15.14.435.216.9.216 1.382ZM4 17a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-          clip-rule="evenodd"
+          clipRule="evenodd"
         />
       </svg>
     ),
@@ -181,7 +181,6 @@ export default function Game() {
           })
         );
       }
-      console.log("latest", wpmData);
     }
   }, [timer]);
 
@@ -204,11 +203,9 @@ export default function Game() {
       inputRef.current?.blur();
     }
     if (typedText.startsWith(" ") && words.length - 1 === currentWordIndex) {
-      console.log("last space clicked");
       return;
     }
     if (typedText.endsWith(" ") && words.length - 1 === currentWordIndex) {
-      console.log("last between space clicked");
       return;
     }
     if (typedText.endsWith(" ")) {
@@ -230,10 +227,8 @@ export default function Game() {
   useEffect(() => {
     const addEvent = async (ev: any) => {
       const parsedData = await JSON.parse(ev.data);
-      console.log(JSON.parse(ev.data));
       if (parsedData.event === "progress-update") {
         const progress = parsedData.data.progress;
-        console.log(progress);
         const sortedProgress = progress.sort(
           (a: any, b: any) => b.progress.totalTyped - a.progress.totalTyped
         );
@@ -241,7 +236,6 @@ export default function Game() {
         setProgressData(sortedProgress);
       }
       if (parsedData.event === "stop-update") {
-        console.log("stop", parsedData.message);
         setIsFinish(true);
       }
       if (parsedData.event === "game-end") {
@@ -367,14 +361,12 @@ export default function Game() {
                           charIndex < inputText.length &&
                           char === inputText[charIndex]
                         ) {
-                          // console.log(char, inputText[charIndex]);
                           classname =
                             "before:border-l-2 before:border-hidden bold text-[#d4d3c4]";
                         } else if (
                           charIndex < inputText.length &&
                           char !== inputText[charIndex]
                         ) {
-                          // console.log(char, inputText[charIndex]);
                           classname = "bold text-red-500";
                         }
                       }

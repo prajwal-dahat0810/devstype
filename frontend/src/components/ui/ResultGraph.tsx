@@ -1,13 +1,11 @@
 import {
   LineChart,
   Line,
-  CartesianGrid,
   XAxis,
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  Legend,
-  Area,
+ 
 } from "recharts";
 export const ResultGraph = ({ wpmData }: any) => {
   return (

@@ -1,12 +1,8 @@
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { roomAtom } from "../store/atoms/testAtom";
 import Navigation from "../components/Navigation";
-import { useWebSocket } from "../hooks/webSocketConnection";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import socket from "./Landing";
-import Landing from "./Landing";
 import { socketAtom } from "../store/atoms/socketAtom";
-import { useTrackRoomPlayers } from "../hooks/trackRoomPlayers";
 import { userAtom } from "../store/atoms/userAtom";
 import { paragraphAtom } from "../store/atoms/roomAtom";
 import { Bounce, toast, ToastContainer } from "react-toastify";
@@ -29,22 +25,6 @@ export default function Room() {
   // const { socket, setSocket }: any = useWebSocket();
   const socket: any = useRecoilValue(socketAtom);
 
-  if (socket !== null) {
-    socket.addEventListener("message", function (event: { data: any }) {
-      const { event: eventName, data: data } = JSON.parse(event.data);
-
-      if (eventName === "joined-room") {
-        console.log("game-started", data);
-        const roomId = data.roomId;
-        console.log("Start game event sent!");
-        console.log("room -players", room.players);
-        console.log("data-room", data);
-      }
-      // console.log(typeof event.data);
-      // console.log(event.data);
-    });
-  }
-  console.log(createdBy === Number(user.id));
   function handleLeaveGame() {
     const loadId = toast.loading("Leaving room...", {
       style: {
@@ -91,7 +71,7 @@ export default function Room() {
 
           setTimeout(() => {
             roomLeavedRef.current = null;
-            setRoom((prev) => data.room);
+            setRoom(() => data.room);
             navigate("/");
           }, 3000);
           return;
@@ -131,13 +111,10 @@ export default function Room() {
 
       if (eventName === "get-message") {
         const newMessage = data.message;
-        console.log(newMessage);
         setMessages((prev) => [...prev, newMessage]);
       }
       if (eventName === "player-join") {
-        console.log(event.data);
         const joinedPlayerName = user.userName;
-        console.log("player-join");
         toast.dark(`Room Joined by ${joinedPlayerName}!`, {
           style: {
             border: "2px solid #3b82f6",
@@ -149,10 +126,9 @@ export default function Room() {
             backgroundColor: "#1e3a8a",
           },
         });
-        setRoom((prev) => data.room);
+        setRoom(() => data.room);
       }
       if (eventName === "room-deleted") {
-        console.log("room-deleted");
         roomLeavedRef.current = toast.dark(
           data.message,
 
@@ -172,7 +148,6 @@ export default function Room() {
         navigate("/");
       }
       if (eventName === "admin-room-leaved") {
-        console.log(event.data);
         const playerLeaved = data.player.userName;
         roomLeavedRef.current = toast.dark(
           `Room admin ${playerLeaved}Leaved!`,
@@ -196,10 +171,9 @@ export default function Room() {
         roomLeavedRef.current = null;
         setGameType(data.gameType);
         setWordsLimit(data.wordsLimit);
-        setRoom((prev) => data.room);
+        setRoom(() => data.room);
       }
       if (eventName === "admin-leaved") {
-        console.log(event.data);
         roomLeavedRef.current = toast.dark(
           `New admin ${data.admin}`,
 
@@ -222,7 +196,6 @@ export default function Room() {
         navigate("/");
       }
       if (eventName === "room-leave") {
-        console.log("player leaved");
         const leavedPlayer = data.player;
         roomLeavedRef.current = toast.dark(
           `Room Leaved by ${leavedPlayer.userName}!`,
@@ -269,12 +242,9 @@ export default function Room() {
         setRoom(data.room);
       }
       if (eventName === "game-started") {
-        console.log("game-started", data);
         const roomId = data.room.roomId;
         setParagraph(data.paragraph);
-        console.log("Start game event sent!");
         navigate(`/room/${roomId}?wordsLimit=${data.wordsLimit}`);
-        console.log(roomId);
       }
     };
     socket.addEventListener("message", messageHandler);
@@ -294,30 +264,24 @@ export default function Room() {
       socket.addEventListener("message", async function (event: { data: any }) {
         const { event: eventName, data: data } = JSON.parse(event.data);
         if (eventName === "game-error") {
-          const toastId = toast.error(
-            data.message,
-            {
-              style: {
-                border: "2px solid #3b82f6",
-                paddingInline: "10px",
-                paddingTop: 0,
-                paddingBottom: 0,
-                maxHeight: "min-content",
-                color: "#e0f2fe",
-                backgroundColor: "#1e3a8a",
-              },
-            }
-          );
+          const toastId = toast.error(data.message, {
+            style: {
+              border: "2px solid #3b82f6",
+              paddingInline: "10px",
+              paddingTop: 0,
+              paddingBottom: 0,
+              maxHeight: "min-content",
+              color: "#e0f2fe",
+              backgroundColor: "#1e3a8a",
+            },
+          });
           await new Promise((r) => setTimeout(r, 2000));
           toast.dismiss(toastId);
         }
         if (eventName === "game-started") {
-          console.log("game-started", data);
           const roomId = data.room.roomId;
           setParagraph(data.paragraph);
-          console.log("Start game event sent!");
           navigate(`/room/${roomId}?wordsLimit=${data.wordsLimit}`);
-          console.log(roomId);
         }
         if (eventName === "room-error-creating") {
           roomLeavedRef.current = toast.dark(
@@ -341,10 +305,7 @@ export default function Room() {
           roomLeavedRef.current = null;
           navigate(`/`);
         }
-        // console.log(typeof event.data);
-        // console.log(event.data);
       });
-      // console.log("Start game event sent!");
     } else {
       console.error("Socket is not connected yet");
     }
@@ -362,7 +323,6 @@ export default function Room() {
           },
         })
       );
-      console.log("setting input");
       setMessageInput("");
     }
   }

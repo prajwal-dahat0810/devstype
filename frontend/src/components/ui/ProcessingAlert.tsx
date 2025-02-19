@@ -1,8 +1,5 @@
-import { ToastContentProps } from "react-toastify";
 import cx from "clsx";
-type Props = Partial<ToastContentProps> & {
-  data: any;
-};
+
 export const ProcessingAlert = () => {
   return (
     <div className="flex flex-col w-full">

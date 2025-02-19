@@ -84,7 +84,6 @@ server.on("upgrade", (req: any, socket, head) => {
       userId: string;
     };
     const userId = payload.userId;
-    console.log("printing starting");
     console.log(`Upgrading connection for user ${userId}`);
 
     // Upgrade the connection to WebSocket

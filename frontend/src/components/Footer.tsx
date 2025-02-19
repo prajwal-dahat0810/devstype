@@ -25,9 +25,9 @@ const metaDataButtons: unitType[] = [
         fill="currColor"
         stroke="currentColor"
         className="size-3"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       >
         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
         <path d="M7 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
@@ -67,9 +67,9 @@ const mobileButtons: unitType[] = [
         className="size-3"
       >
         <path
-          fill-rule="evenodd"
+          fillRule="evenodd"
           d="M6.28 5.22a.75.75 0 0 1 0 1.06L2.56 10l3.72 3.72a.75.75 0 0 1-1.06 1.06L.97 10.53a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Zm7.44 0a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L17.44 10l-3.72-3.72a.75.75 0 0 1 0-1.06ZM11.377 2.011a.75.75 0 0 1 .612.867l-2.5 14.5a.75.75 0 0 1-1.478-.255l2.5-14.5a.75.75 0 0 1 .866-.612Z"
-          clip-rule="evenodd"
+          clipRule="evenodd"
         />
       </svg>
     ),
@@ -113,9 +113,9 @@ const mobileButtons: unitType[] = [
         className="size-3"
       >
         <path
-          fill-rule="evenodd"
+          fillRule="evenodd"
           d="M9.661 2.237a.531.531 0 0 1 .678 0 11.947 11.947 0 0 0 7.078 2.749.5.5 0 0 1 .479.425c.069.52.104 1.05.104 1.59 0 5.162-3.26 9.563-7.834 11.256a.48.48 0 0 1-.332 0C5.26 16.564 2 12.163 2 7c0-.538.035-1.069.104-1.589a.5.5 0 0 1 .48-.425 11.947 11.947 0 0 0 7.077-2.75Zm4.196 5.954a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z"
-          clip-rule="evenodd"
+          clipRule="evenodd"
         />
       </svg>
     ),
@@ -131,9 +131,9 @@ const mobileButtons: unitType[] = [
         className="size-3"
       >
         <path
-          fill-rule="evenodd"
+          fillRule="evenodd"
           d="M10 1a4.5 4.5 0 0 0-4.5 4.5V9H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-.5V5.5A4.5 4.5 0 0 0 10 1Zm3 8V5.5a3 3 0 1 0-6 0V9h6Z"
-          clip-rule="evenodd"
+          clipRule="evenodd"
         />
       </svg>
     ),
