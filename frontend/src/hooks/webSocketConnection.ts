@@ -14,7 +14,7 @@ export function useWebSocket() {
 
     const getToken = async () => {
       try {
-        const res = await axios.get(`${BACKEND_URL}/refresh`, {
+        const res: any = await axios.get(`${BACKEND_URL}/refresh`, {
           withCredentials: true, // Ensures cookies are sent
         });
         if (res.data.token) {
@@ -54,6 +54,6 @@ export function useWebSocket() {
         window.removeEventListener("beforeunload", handleUnload);
       };
     });
-  }, [token]); 
+  }, [token]);
   return { soc: socket };
 }

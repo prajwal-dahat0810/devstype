@@ -120,7 +120,7 @@ export default function () {
           backgroundColor: "#1e3a8a",
         },
       });
-      const response = await axios.post(
+      const response: any = await axios.post(
         `${BACKEND_URL}/signup`,
         {
           userName,
@@ -282,7 +282,7 @@ export default function () {
           backgroundColor: "#1e3a8a",
         },
       });
-      const response = await axios.post(
+      const response: any = await axios.post(
         `${BACKEND_URL}/signin`,
         {
           email,

@@ -1,5 +1,5 @@
 import axios from "axios";
-import {  useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { userAtom } from "../store/atoms/userAtom";
@@ -18,7 +18,7 @@ export default function Navigation() {
 
   async function handleLogout() {
     try {
-      const res = await axios.get(`${BACKEND_URL}/logout`, {
+      const res: any = await axios.get(`${BACKEND_URL}/logout`, {
         withCredentials: true,
       });
       if (res.status === 200) {

@@ -28,7 +28,7 @@ export default function Landing() {
       .get(`${BACKEND_URL}/me`, {
         withCredentials: true,
       })
-      .then((response) => {
+      .then((response: any) => {
         setUser({
           userName: response.data.user.userName,
           id: response.data.user.id,
