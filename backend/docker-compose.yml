@@ -1,0 +1,76 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:alpine
+    container_name: db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mydatabase  # Define POSTGRES_DB
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $POSTGRES_DB -U $POSTGRES_USER"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s  # Added start_period for longer initialization time
+    networks:
+      - my-devtype-network
+
+
+
+  backend: 
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        DATABASE_URL: postgresql://postgres:postgres@db:5432/mydatabase
+    container_name: test-backend-devstype
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/mydatabase
+      - JWT_SECRET=mysecret
+      - REDIS_URL=redis://redis:6379  # Updated: Use service name instead of localhost
+      - FRONTEND_URL=http://localhost:5173  # Fixed: Removed extra space
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/backend
+      - devstype-redis-volume:/data
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - my-devtype-network
+    command: ["/bin/ash", "-c", "npx prisma generate  && npm run dev"]
+
+  
+  redis:
+    image: redis:alpine
+    container_name: test-redis-devstype
+    ports:
+      - "6379:6379"
+    networks:
+      - my-devtype-network
+    volumes:
+      - devstype-redis-volume:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+
+networks:
+  my-devtype-network:
+    driver: bridge
+
+volumes:
+  devstype-redis-volume:
+    driver: local
+  postgres-data:
+    driver: local

@@ -1,0 +1,1 @@
+{"root":["./src/index.ts","./src/types.ts","./src/events/gameevents.ts","./src/events/redisevents.ts","./src/events/userevents.ts","./src/routes/userroutes.ts"],"version":"5.7.3"}

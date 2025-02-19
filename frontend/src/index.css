@@ -1,0 +1,29 @@
+@import "tailwindcss";
+@font-face {
+  font-family: "Roboto Mono";
+  src: url("/src/assets/fonts/RobotoMono-Regular.woff2") format("woff2"),
+    url("/src/assets/fonts/RobotoMono-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+      
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("/src/assets/fonts/Vazirmatn-Regular.woff2") format("woff2"),
+    url("/src/assets/fonts/Vazirmatn-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@tailwind utilities;
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #555; /* Customize the color */
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #333; /* Color on hover */
+}
