@@ -36,10 +36,11 @@ Your Docker Demon should be online
 
 # Project set up locally
 
-Access the application in your browser:\\
-http://localhost:5173\\
+Access the application in your browser:  
+http://localhost:5173
 
-Login using any of the following provided user credentials:\\
-Email: testuser@example.com, Password: 123456\\
+Login using any of the following provided user credentials:
 
-Email: testuser2@example.com, Password: 123456\\
+Email: testuser@example.com, Password: 123456
+
+Email: testuser2@example.com, Password: 123456  
