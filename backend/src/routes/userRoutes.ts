@@ -167,7 +167,7 @@ userRouter.get("/logout", async (req: Request, res: Response): Promise<any> => {
     res.clearCookie("token", {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      sameSite: "none",
       path: "/",
     });
     return res.status(200).json({
