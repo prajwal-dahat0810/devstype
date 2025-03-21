@@ -8,9 +8,13 @@ import Room from "./pages/Room";
 import Game from "./pages/Game";
 import About from "./pages/About";
 import Setting from "./pages/Setting";
+import { Analytics } from "@vercel/analytics/react";
+
 function App() {
   return (
     <>
+      {" "}
+      <Analytics />
       <RecoilRoot>
         <BrowserRouter>
           <Routes>
