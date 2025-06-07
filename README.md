@@ -43,4 +43,6 @@ Login using any of the following provided user credentials:
 
 Email: testuser@example.com, Password: 123456
 
-Email: testuser2@example.com, Password: 123456  
+Email: testuser2@example.com, Password: 123456 
+
+https://www.notion.so/Devstype-20ba9a91bc49802687cde235b38b8a84?source=copy_link 
