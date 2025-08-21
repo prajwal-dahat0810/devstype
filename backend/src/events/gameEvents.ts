@@ -59,12 +59,7 @@ export const gameEvents = async (ws: userWebSocket, eventData: any) => {
   if (event === "history") {
     const { filter } = data;
 
-    console.log(
-      "history event received for user:",
-      userId,
-      "with filter:",
-      filter
-    );
+    console.log("history event received for user:", userId);
 
     try {
       if (filter && filter === "all-time") {

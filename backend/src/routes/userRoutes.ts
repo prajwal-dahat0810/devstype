@@ -2,7 +2,7 @@ import express from "express";
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { signinZodSchema, signupZodSchema } from "../types";
-import jwt from "jsonwebtoken";
+import jwt, { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
 const saltRounds = 10;
@@ -78,7 +78,7 @@ userRouter.post(
       res.cookie("token", token, {
         httpOnly: true,
         secure: true,
-        sameSite: "lax",
+        sameSite: "none",
         maxAge: 24 * 60 * 60 * 1000,
       });
       return res.status(200).json({
@@ -113,18 +113,15 @@ userRouter.patch(
         .status(401)
         .json({ message: "Unauthorized, no token in cookies" });
     }
-    console.log(token, JWT_SECRET);
     const payload = jwt.verify(token, JWT_SECRET as string) as {
       userId: string;
     };
-
     const userId = payload.userId;
     if (!userId) {
       return res
         .status(401)
         .json({ message: "Unauthorized, no userId in token" });
     }
-    console.log("UserId:", userId);
     try {
       const userPassword = await prisma.player.findFirst({
         where: {
@@ -162,10 +159,21 @@ userRouter.patch(
         },
       });
       return res.status(200).json({
-        message: "User updated successfully",
-        user: updatedUser,
+        userName: updatedUser.userName,
+        id: updatedUser.id,
+        email: updatedUser.email,
       });
     } catch (error) {
+      if (error instanceof TokenExpiredError) {
+        return res
+          .status(401)
+          .json({ message: "User update fails", error: "Token expired" });
+      }
+      if (error instanceof JsonWebTokenError) {
+        return res
+          .status(401)
+          .json({ message: "User update fails", error: "Invalid token" });
+      }
       return res.status(500).json({
         message: "User update fails",
         error: error,
@@ -201,7 +209,6 @@ userRouter.post(
             message: "User not exists",
           });
         }
-        console.log(isUserExist);
         const authenticated = await bcrypt.compare(
           password,
           isUserExist.password
@@ -218,15 +225,14 @@ userRouter.post(
         res.cookie("token", token, {
           httpOnly: true,
           secure: true,
-          sameSite: "lax",
+          sameSite: "none",
           maxAge: 3 * 24 * 60 * 60 * 1000,
         });
-        // console.log(token);
         return res.status(200).json({
           message: "User signin successfully!!!",
         });
       } catch (e) {
-        console.log(e);
+        // console.log(e);
         return res.status(500).json({
           message: "User signin fails!!!",
           error: e,
@@ -261,14 +267,13 @@ userRouter.get("/logout", async (req: Request, res: Response): Promise<any> => {
     res.clearCookie("token", {
       httpOnly: true,
       secure: true,
-      sameSite: "lax",
+      sameSite: "none",
       path: "/",
     });
     return res.status(200).json({
       message: "Player logout successfully!!!",
     });
   } catch (e) {
-    console.log(e);
     return res.status(500).json({
       message: "Error while logout!!!",
       e: e,

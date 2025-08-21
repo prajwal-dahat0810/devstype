@@ -266,9 +266,8 @@ export const userEvents = async (ws: userWebSocket, eventData: any) => {
       })
     );
     const clients = roomSockets.get(roomId);
-    // console.log(clients?.size);
     if (!clients) {
-      console.log(`other player not in room`);
+      // console.log(`other player not in room`);
       ws.send(
         JSON.stringify({
           event: "game-error",
