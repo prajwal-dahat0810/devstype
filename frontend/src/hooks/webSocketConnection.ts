@@ -13,6 +13,7 @@ export function useWebSocket() {
     if (socket) return;
 
     const getToken = async () => {
+      console.log('taking to get token')
       try {
         const res: any = await axios.get(`${BACKEND_URL}/refresh`, {
           withCredentials: true,
