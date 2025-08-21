@@ -4,7 +4,7 @@ module.exports = {
     extend: {
       fontFamily: {
         customMono: ["monospace"], // Direct font stack
-        custom: ["Vazirmatn"],
+        customFont: ["Roboto Mono", "Roboto Mono", "Vazirmatn", "monospace"],
       },
     },
   },

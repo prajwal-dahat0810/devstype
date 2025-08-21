@@ -1,10 +1,12 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL as string;
-import { Bounce, ToastContainer, toast } from "react-toastify";
+// import { Bounce, ToastContainer, toast } from "react-toastify";
 import { ErrorAlert } from "../components/ui/ErrorAlert";
 import { Footer } from "../components/Footer";
+import { Bounce, toast, ToastContainer } from "react-toastify";
 export const contextClass = {
   success: "bg-blue-600",
   error: "bg-red-100",
@@ -36,6 +38,9 @@ export default function () {
     });
 
   async function handleSignup() {
+    toast.loading("Loading…", {
+      className: "bg-red-500     w-full",
+    });
     if (
       signupEmail === "" ||
       signupPassword === "" ||
@@ -137,10 +142,12 @@ export default function () {
 
       if (
         response.data.status === 401 ||
+        response.data.status === 409 ||
         response.data.status === 400 ||
         response.data.status === 500
       ) {
         toast.dismiss(loadId);
+        console.log("error", response.data);
         toast.error(
           <ErrorAlert data={{ content: response.data.message }} />,
 
@@ -185,6 +192,7 @@ export default function () {
       }
     } catch (error: any) {
       toast.dismiss();
+      console.log("catch", error);
       if (error.response)
         if (
           error.response.status === 401 ||
@@ -253,7 +261,6 @@ export default function () {
           }, 3000);
           return;
         }
-
         const toastId = toast.error(
           <ErrorAlert data={{ content: "Please Enter password" }} />,
           {
@@ -295,26 +302,21 @@ export default function () {
           },
         }
       );
-
       // toast.dismiss(loadId);
-
       if (
         response.data.status === 401 ||
         response.data.status === 400 ||
+        response.data.status === 409 ||
         response.data.status === 500
       ) {
         toast.dismiss(loadId);
-        toast.error(
-          <ErrorAlert data={{ content: response.data.message }} />,
-
-          {
-            autoClose: 3000,
-            progress: 0.3,
-            icon: false,
-            data: { content: response.data.message },
-            theme: "colored",
-          }
-        );
+        toast.error(<ErrorAlert data={{ content: response.data.message }} />, {
+          autoClose: 3000,
+          progress: 0.3,
+          icon: false,
+          data: { content: response.data.message },
+          theme: "colored",
+        });
         return;
       }
       if (response.status === 200) {
@@ -335,10 +337,12 @@ export default function () {
       }
     } catch (error: any) {
       toast.dismiss();
+      console.log("catch", error);
       if (error.response)
         if (
           error.response.status === 401 ||
           error.response.status === 400 ||
+          error.response.status === 409 ||
           error.response.status === 500
         ) {
           toast.error(
@@ -347,7 +351,6 @@ export default function () {
               progress: 0.3,
               data: { content: error.response.data.message },
               icon: false,
-
               theme: "colored",
             }
           );
@@ -358,7 +361,6 @@ export default function () {
           progress: 0.3,
           data: { content: error.message },
           icon: false,
-
           theme: "colored",
         });
         return;

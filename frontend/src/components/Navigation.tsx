@@ -8,6 +8,7 @@ import { ErrorAlert } from "./ui/ErrorAlert";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL as string;
 
 export default function Navigation() {
+  
   // const [userName, setuserName] = useState("");
   const user = useRecoilValue(userAtom);
   const [openModal, setOpenModal] = useState(false);
@@ -96,9 +97,9 @@ export default function Navigation() {
   //     });
   // }, []);
   return (
-    <nav className="h-12 z-10 bg-[#323437] border items-center fixed top-0 left-0 right-0 mx-auto  p-2">
-      <div className="max-w-5xl  h-9 flex px-2 justify-between mx-auto ">
-        <div className="flex gap-1 max-sm:gap-3  justify-between">
+    <nav className="h-12 z-10 bg-[#323437]    items-center fixed top-0 left-0 right-0 mx-auto  p-2">
+      <div className="max-w-5xl  h-9 flex px-2 justify-between mx-auto  w-full">
+        <div className="flex gap-1 max-sm:gap-5      justify-between">
           <div
             onClick={() => (window.location.href = "/")}
             className=" cursor-pointer flex items-center"
@@ -132,38 +133,43 @@ export default function Navigation() {
               devstype
             </h1>
           </div>
-          <div className="flex  gap-4 max-sm:gap-1 items-center">
+          <div className="flex  gap-4 max-sm:gap-3 items-center">
             <div onClick={() => navigate("/")} className=" cursor-pointer">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="#686464"
                 height={20}
+                className="hover:fill-[#d1d0c5]"
                 viewBox="0 0 24 24"
               >
                 <path d="M23 4H1a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h22a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1zm-1 14H2V6h20z" />
                 <path d="M8 16h8a1 1 0 0 0 0-2H8a1 1 0 0 0 0 2zM4 13h1a1 1 0 0 0 0-2H4a1 1 0 0 0 0 2zM9 13h1a1 1 0 0 0 0-2H9a1 1 0 0 0 0 2zM14 13h1a1 1 0 0 0 0-2h-1a1 1 0 0 0 0 2zM19 13h1a1 1 0 0 0 0-2h-1a1 1 0 0 0 0 2zM4 10h1a1 1 0 0 0 0-2H4a1 1 0 0 0 0 2zM9 10h1a1 1 0 0 0 0-2H9a1 1 0 0 0 0 2zM14 10h1a1 1 0 0 0 0-2h-1a1 1 0 0 0 0 2zM19 10h1a1 1 0 0 0 0-2h-1a1 1 0 0 0 0 2z" />
               </svg>
             </div>
-            <div onClick={() => navigate("/about")} className=" cursor-pointer">
+            <div
+              onClick={() => navigate("/history")}
+              className=" cursor-pointer"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 height={20}
                 viewBox="0 0 128 128"
+                className="fill-[#686464] hover:fill-[#d1d0c5]"
               >
-                <path
-                  fill="#686464"
-                  d="M128 53.279c0 5.043-4.084 9.136-9.117 9.136-.091 0-.164 0-.255-.018l-8.914 34.06H18.286L8.734 65.01C3.884 64.81 0 60.808 0 55.892c0-5.043 4.084-9.136 9.117-9.136 5.032 0 9.117 4.093 9.117 9.136a9.557 9.557 0 0 1-.492 2.997l22.081 12.919 18.671-34.371a9.1 9.1 0 0 1-4.267-7.729c0-5.043 4.084-9.136 9.117-9.136s9.117 4.093 9.117 9.136a9.1 9.1 0 0 1-4.267 7.729l18.671 34.371 24.05-14.07a9.164 9.164 0 0 1-1.149-4.459c0-5.062 4.084-9.136 9.117-9.136 5.033 0 9.117 4.075 9.117 9.136zm-18.286 46.835H18.286v7.314h91.429v-7.314z"
-                />
+                <path d="M128 53.279c0 5.043-4.084 9.136-9.117 9.136-.091 0-.164 0-.255-.018l-8.914 34.06H18.286L8.734 65.01C3.884 64.81 0 60.808 0 55.892c0-5.043 4.084-9.136 9.117-9.136 5.032 0 9.117 4.093 9.117 9.136a9.557 9.557 0 0 1-.492 2.997l22.081 12.919 18.671-34.371a9.1 9.1 0 0 1-4.267-7.729c0-5.043 4.084-9.136 9.117-9.136s9.117 4.093 9.117 9.136a9.1 9.1 0 0 1-4.267 7.729l18.671 34.371 24.05-14.07a9.164 9.164 0 0 1-1.149-4.459c0-5.062 4.084-9.136 9.117-9.136 5.033 0 9.117 4.075 9.117 9.136zm-18.286 46.835H18.286v7.314h91.429v-7.314z" />
               </svg>
             </div>
-            <div onClick={() => navigate("/about")} className=" cursor-pointer">
+            <div
+              onClick={() => navigate("/about")}
+              className=" cursor-pointer max-sm:sr-only"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="#686464"
-                className="size-4"
+                className="size-5 hover:stroke-[#d1d0c5]"
               >
                 <path
                   stroke-linecap="round"
@@ -173,14 +179,13 @@ export default function Navigation() {
               </svg>
             </div>
             <div
-              onClick={() => navigate("/setting")}
+              onClick={() => navigate("/account-settings?tab=account")}
               className=" cursor-pointer"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
-                fill="#686464"
-                className="size-4"
+                className="size-5 fill-[#686464] hover:fill-[#d1d0c5]"
               >
                 <path
                   fillRule="evenodd"
@@ -191,7 +196,7 @@ export default function Navigation() {
             </div>
           </div>
         </div>
-        <div className=" flex gap-2 items-center ">
+        <div className=" flex gap-3 items-center ">
           <div className="cursor-pointer">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -208,13 +213,12 @@ export default function Navigation() {
           </div>
           <div
             onClick={handleModal}
-            className="flex gap-1 cursor-pointer items-center "
+            className="flex gap-1 fill-[#686464] hover:fill-gray-200 transition-colors duration-200 cursor-pointer items-center "
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
-              fill="#686464"
-              className="size-4"
+              className="size-4  "
             >
               <path
                 fillRule="evenodd"
@@ -222,14 +226,13 @@ export default function Navigation() {
                 clipRule="evenodd"
               />
             </svg>
-            <div className="min-w-20 max-w-52  max-sm:sr-only text-[#686464]">
+            <div className="min-w-20  max-w-52 fill-gray-300 hover:text-gray-300 transition-colors duration-200 max-sm:sr-only text-[#686464]">
               {user.userName !== "" ? user.userName : "Anonymous"}
             </div>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
-              fill="#686464"
-              className="size-4 max-sm:sr-only"
+              className="size-4   max-sm:sr-only "
             >
               <path d="M5.507 4.048A3 3 0 0 1 7.785 3h8.43a3 3 0 0 1 2.278 1.048l1.722 2.008A4.533 4.533 0 0 0 19.5 6h-15c-.243 0-.482.02-.715.056l1.722-2.008Z" />
               <path
@@ -240,11 +243,14 @@ export default function Navigation() {
             </svg>
             {openModal && (
               <div
-                className={` w-32  flex rounded-sm flex-col min-h-full max-sm:right-2 top-14 bg-[#3c3e42] sm:right-7 xl:right-56   absolute ${
+                className={` w-36  flex rounded-sm flex-col min-h-full max-sm:right-2 top-14 bg-[#2c2e31] sm:right-7 xl:right-56   absolute ${
                   openModal ? "not-sr-only" : "sr-only"
                 }`}
               >
-                <div className="py-1 hover:bg-[#2c2e31] text-[#D1D0C5]  rounded-sm flex text-[12px] px-2 gap-2 justify-between items-center">
+                <div
+                  onClick={() => navigate("/history")}
+                  className="py-1  hover:bg-[#d1d0c5] hover:text-[#2c2e31] text-[#D1D0C5]  rounded-sm flex text-[12px] px-2 gap-2 justify-between items-center"
+                >
                   {" "}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -256,7 +262,10 @@ export default function Navigation() {
                   </svg>
                   <div className="w-full">User Stats</div>
                 </div>
-                <div className=" py-1 hover:bg-[#2c2e31] text-[#D1D0C5]  rounded-sm flex text-[12px] px-2 gap-2 justify-between items-center">
+                <div
+                  onClick={() => navigate("/account-settings")}
+                  className=" py-1 hover:bg-[#d1d0c5] hover:text-[#2c2e31]  text-[#D1D0C5]  rounded-sm flex text-[12px] px-2 gap-2 justify-between items-center"
+                >
                   {" "}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -272,7 +281,7 @@ export default function Navigation() {
                   </svg>
                   <div className="w-full">Account Settings</div>
                 </div>
-                <div className="py-1 hover:bg-[#2c2e31] text-[#D1D0C5]  rounded-sm flex text-[12px] px-2 gap-2 justify-between items-center">
+                <div className="py-1 hover:bg-[#d1d0c5] hover:text-[#2c2e31] text-[#D1D0C5]  rounded-sm flex text-[12px] px-2 gap-2 justify-between items-center">
                   {" "}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -293,7 +302,7 @@ export default function Navigation() {
                   </svg>
                   <button
                     onClick={handleLogout}
-                    className="w-full cursor-pointer"
+                    className="w-full text-start cursor-pointer"
                   >
                     Logout
                   </button>

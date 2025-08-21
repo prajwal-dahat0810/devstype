@@ -185,7 +185,8 @@ export default function Game() {
   }, [timer]);
 
   // send update with userId, RoomId
-
+  const start = Math.floor(currentWordIndex / 14) * 14;
+  const currentParagraph = words.slice(start, start + 14).join(" ");
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const typedText = e.target.value;
 
@@ -306,11 +307,12 @@ export default function Game() {
         hideProgressBar
       />
       <div className="max-w-5xl w-full min-w-[300px] flex justify-center flex-col items-center px-2  mt-12 ">
-        <div className="min-h-48 h-full  flex flex-grow flex-col items-center px-3 py-2">
-          <div className=" w-min flex   rounded-sm items-center justify-center  bg-[#2d2d33]">
+        <div className="absolute left-5 top-16">timer {timer}</div>
+        <div className="min-h-48 h-full w-full  flex flex-grow flex-col items-center px-3 py-2">
+          <div className=" w-min flex sm:my-4 max-sm:sr-only rounded-sm items-center justify-center  bg-[#2d2d33]">
             {units.map((unit) => {
               return (
-                <div className="flex font-sans  text-[#646669] max-sm:gap-1 max-sm:px-0.5 max-sm:text-[8px] text-[10px]  py-1.5 items-center  px-2 gap-2 ">
+                <div className="flex font-sans hover:text-[#d1d3d5]  text-[#646669] max-sm:gap-1 max-sm:px-0.5 max-sm:text-[8px] text-[10px]  py-2.5 items-center  px-2 gap-2 ">
                   <div
                     className={`${
                       unit.name === "Words" ? "text-amber-300" : ""
@@ -330,26 +332,112 @@ export default function Game() {
             })}
             {times.map((time) => {
               return (
-                <div className="flex max-sm:sr-only text-[#646669] text-[10px]  max-sm:gap-1 max-sm:px-1 py-1.5 items-center  px-3 gap-3">
+                <div className="flex max-sm:sr-only hover:text-[#d1d3d5]  text-[#646669] text-[10px]  max-sm:gap-1 max-sm:px-1 py-1.5 items-center  px-3 gap-3">
                   <div>{time}</div>
                 </div>
               );
             })}
           </div>
 
-          <div className=" mt-2 min-h-40 max-h-44 w-full h-full">
-            <p className="text-[1.7rem] font-mono box-content  gap-0.5 leading-4 text-[#5e6064] px-3 py-3 flex flex-wrap">
-              {paragraph.split(" ").map((word, index) => {
+          <div className=" mt-2  min-h-40 max-h-44 w-full max-w-3xl h-full">
+            <div className="w-full h-full flex flex-col items-center justify-center ">
+              <div className="sm:sr-only flex w-max  items-center justify-center gap-2 px-4 rounded-md py-2 font-mono text-[#646669] bg-[#2c2e31] text-[12px] font-semibold">
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    className="size-3"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M8.34 1.804A1 1 0 0 1 9.32 1h1.36a1 1 0 0 1 .98.804l.295 1.473c.497.144.971.342 1.416.587l1.25-.834a1 1 0 0 1 1.262.125l.962.962a1 1 0 0 1 .125 1.262l-.834 1.25c.245.445.443.919.587 1.416l1.473.294a1 1 0 0 1 .804.98v1.361a1 1 0 0 1-.804.98l-1.473.295a6.95 6.95 0 0 1-.587 1.416l.834 1.25a1 1 0 0 1-.125 1.262l-.962.962a1 1 0 0 1-1.262.125l-1.25-.834a6.953 6.953 0 0 1-1.416.587l-.294 1.473a1 1 0 0 1-.98.804H9.32a1 1 0 0 1-.98-.804l-.295-1.473a6.957 6.957 0 0 1-1.416-.587l-1.25.834a1 1 0 0 1-1.262-.125l-.962-.962a1 1 0 0 1-.125-1.262l.834-1.25a6.957 6.957 0 0 1-.587-1.416l-1.473-.294A1 1 0 0 1 1 10.68V9.32a1 1 0 0 1 .804-.98l1.473-.295c.144-.497.342-.971.587-1.416l-.834-1.25a1 1 0 0 1 .125-1.262l.962-.962A1 1 0 0 1 5.38 3.03l1.25.834a6.957 6.957 0 0 1 1.416-.587l.294-1.473ZM13 10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <div>Test setting</div>
+              </div>
+            </div>
+            <p className="text-[1.7rem] font-mono box-content  gap-0.5 leading-4 max-sm:mt-3 text-[#5e6064] px-3 py-3 max-sm:px-0 flex flex-wrap">
+              {currentParagraph.split(" ").map((word, index) => {
                 return (
-                  <span key={index} className={`my-[.25em] mx-[.3em]  `}>
+                  <span
+                    key={index}
+                    className={`my-[.25em] mx-[.3em] px-auto  `}
+                  >
                     {word.split("").map((char, charIndex) => {
                       let classname = "";
-                      if (currentWordIndex > index) {
-                        classname =
-                          " before:border-hidden bold text-[#d1d0c5] ";
+
+                      if (typedWords.length > 27 && currentWordIndex > index) {
+                        // console.log(typedWords, currentWordIndex, index);
+                        if (currentWordIndex > index + 28) {
+                          classname = " border-hidden bold text-[#d1d0c5] ";
+                          if (char != typedWords[index + 28][charIndex]) {
+                            classname =
+                              "border-l-1 border-hidden bold text-red-500 ";
+                          }
+                        }
+                        if (currentWordIndex === index + 28) {
+                          if (charIndex === inputText.length)
+                            classname = `before:border-l-1 ${
+                              currentWordIndex !== 28
+                                ? ""
+                                : "before:animate-ping"
+                            }  before:border-amber-200`;
+                          else if (
+                            charIndex < inputText.length &&
+                            char === inputText[charIndex]
+                          ) {
+                            classname =
+                              "before:border-l-2 before:border-hidden bold text-[#d4d3c4]";
+                          } else if (
+                            charIndex < inputText.length &&
+                            char !== inputText[charIndex]
+                          ) {
+                            classname = "bold text-red-500";
+                          }
+                        }
+                      }
+                      if (
+                        typedWords.length >= 14 &&
+                        typedWords.length < 28 &&
+                        currentWordIndex > index
+                      ) {
+                        // console.log(typedWords, currentWordIndex, index);
+                        if (currentWordIndex > index + 14) {
+                          classname = " border-hidden bold text-[#d1d0c5] ";
+                          if (char != typedWords[index + 14][charIndex]) {
+                            classname =
+                              "border-l-1 border-hidden bold text-red-500 ";
+                          }
+                        }
+                        if (currentWordIndex === index + 14) {
+                          if (charIndex === inputText.length)
+                            classname = `before:border-l-1 ${
+                              currentWordIndex !== 14
+                                ? ""
+                                : "before:animate-ping"
+                            }  before:border-amber-200`;
+                          else if (
+                            charIndex < inputText.length &&
+                            char === inputText[charIndex]
+                          ) {
+                            classname =
+                              "before:border-l-2 before:border-hidden bold text-[#d4d3c4]";
+                          } else if (
+                            charIndex < inputText.length &&
+                            char !== inputText[charIndex]
+                          ) {
+                            classname = "bold text-red-500";
+                          }
+                        }
+                      }
+                      if (typedWords.length < 14 && currentWordIndex > index) {
+                        classname = " border-hidden bold text-[#d1d0c5] ";
                         if (char != typedWords[index][charIndex]) {
                           classname =
-                            "before:border-l-1 before:border-hidden bold text-red-500 ";
+                            "border-l-1 border-hidden bold text-red-500 ";
                         }
                       } else if (currentWordIndex === index) {
                         if (charIndex === inputText.length)
@@ -372,7 +460,7 @@ export default function Game() {
                       }
                       return (
                         <span
-                          className={`${classname} pr-[.4] leading-[1rem] `}
+                          className={`${classname} px-auto   pr-[.4] leading-[1rem] `}
                         >
                           {char}
                         </span>
@@ -401,7 +489,7 @@ export default function Game() {
             Number(wordsLimit) === 15 ? "mt-20" : "mt-56"
           } mt-2 h-[400px] max-h-full px-3 pt-3 w-full   `}
         >
-          <div className=" overflow-y-scroll custom-scrollbar  w-full  h-full">
+          <div className=" overflow-y-scroll custom-scrollbar max-w-3xl w-full  h-full">
             {progressData &&
               progressData.map((player) => {
                 return (
@@ -521,7 +609,7 @@ export default function Game() {
             <div className="h-36  w-full"></div>
           </div>
         </div>
-        <div className="wrapper absolute bottom-0 left-0 w-full flex flex-col items-center gap-2">
+        <div className="wrapper  absolute bottom-0 left-0 w-full flex flex-col items-center gap-2">
           <Footer />
         </div>
       </div>

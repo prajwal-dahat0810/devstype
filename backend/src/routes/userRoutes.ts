@@ -4,7 +4,9 @@ import { Request, Response } from "express";
 import { signinZodSchema, signupZodSchema } from "../types";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+
 const saltRounds = 10;
+
 export const prisma = new PrismaClient();
 async function checkDatabaseConnection() {
   try {
@@ -36,6 +38,7 @@ userRouter.get(
     });
   }
 );
+
 userRouter.post(
   "/signup",
   async (req: Request, res: Response): Promise<any> => {
@@ -75,7 +78,7 @@ userRouter.post(
       res.cookie("token", token, {
         httpOnly: true,
         secure: true,
-        sameSite: "none",
+        sameSite: "lax",
         maxAge: 24 * 60 * 60 * 1000,
       });
       return res.status(200).json({
@@ -90,6 +93,81 @@ userRouter.post(
     } catch (error) {
       return res.status(500).json({
         message: "User signup fails",
+        error: error,
+      });
+    }
+  }
+);
+userRouter.patch(
+  "/api/user/update",
+  async (req: Request, res: Response): Promise<any> => {
+    const { userName, password } = req.body;
+    if (userName.length > 15) {
+      return res.status(409).json({
+        message: "Please enter less than 15 character",
+      });
+    }
+    const token = req.cookies.token;
+    if (!token) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized, no token in cookies" });
+    }
+    console.log(token, JWT_SECRET);
+    const payload = jwt.verify(token, JWT_SECRET as string) as {
+      userId: string;
+    };
+
+    const userId = payload.userId;
+    if (!userId) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized, no userId in token" });
+    }
+    console.log("UserId:", userId);
+    try {
+      const userPassword = await prisma.player.findFirst({
+        where: {
+          id: Number(userId),
+        },
+        select: {
+          password: true,
+        },
+      });
+      if (!userPassword) {
+        return res.status(404).json({
+          message: "User not found",
+        });
+      }
+      const isCorrectPassword = await bcrypt.compare(
+        password,
+        userPassword.password
+      );
+      if (!isCorrectPassword) {
+        return res.status(409).json({
+          message: "Please enter correct password",
+        });
+      }
+      const updatedUser = await prisma.player.update({
+        where: {
+          id: Number(userId),
+        },
+        data: {
+          userName: userName,
+        },
+        select: {
+          userName: true,
+          email: true,
+          id: true,
+        },
+      });
+      return res.status(200).json({
+        message: "User updated successfully",
+        user: updatedUser,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        message: "User update fails",
         error: error,
       });
     }
@@ -140,7 +218,7 @@ userRouter.post(
         res.cookie("token", token, {
           httpOnly: true,
           secure: true,
-          sameSite: "none",
+          sameSite: "lax",
           maxAge: 3 * 24 * 60 * 60 * 1000,
         });
         // console.log(token);
@@ -162,6 +240,7 @@ userRouter.post(
     }
   }
 );
+
 userRouter.get("/logout", async (req: Request, res: Response): Promise<any> => {
   try {
     const token = req.cookies.token;
@@ -182,7 +261,7 @@ userRouter.get("/logout", async (req: Request, res: Response): Promise<any> => {
     res.clearCookie("token", {
       httpOnly: true,
       secure: true,
-      sameSite: "none",
+      sameSite: "lax",
       path: "/",
     });
     return res.status(200).json({

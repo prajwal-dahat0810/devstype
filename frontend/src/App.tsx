@@ -7,13 +7,16 @@ import Signin from "./pages/Signin";
 import Room from "./pages/Room";
 import Game from "./pages/Game";
 import About from "./pages/About";
+import History from "./pages/History";
 import Setting from "./pages/Setting";
 import { Analytics } from "@vercel/analytics/react";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
     <>
       {" "}
+      <ToastContainer />
       <Analytics />
       <RecoilRoot>
         <BrowserRouter>
@@ -21,8 +24,9 @@ function App() {
             <Route path="/room" element={<Room />} />
             <Route path="/signin" element={<Signin />} />
             <Route path="/" element={<Landing />} />
+            <Route path="/history" element={<History />} />
             <Route path="/about" element={<About />} />
-            <Route path="/setting" element={<Setting />} />
+            <Route path="/account-settings" element={<Setting />} />
             <Route path="/room/:id" element={<Game />} />
           </Routes>
         </BrowserRouter>
