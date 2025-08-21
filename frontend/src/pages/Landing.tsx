@@ -24,6 +24,7 @@ export default function Landing() {
   const [wordsLimit, setWordsLimit] = useState(wordsOptions[0]);
   const [, setRoom] = useRecoilState(roomAtom);
   const [roomInputId, setRoomInputId] = useState("");
+
   useEffect(() => {
     axios
       .get(`${BACKEND_URL}/me`, {
@@ -37,8 +38,9 @@ export default function Landing() {
         });
       })
       .catch((error) => {
-        console.log(error)
+        console.log(error);
         if (error.response.request.status === 401) {
+          console.log("error for signout");
           window.location.href = "/signin";
         }
       });

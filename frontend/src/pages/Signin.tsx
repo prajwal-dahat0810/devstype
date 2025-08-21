@@ -476,7 +476,7 @@ export default function () {
             />
             <button
               onClick={handleLogin}
-              className="w-full hover:bg-[#d1d0c5] hover:text-[#323437] py-1.5  text-[#646669] flex justify-center items-center gap-2   px-2   font-mono  bg-[#35383c] p-1 rounded-sm " // onClick={handleLogin}
+              className="w-full cursor-pointer hover:bg-[#d1d0c5] hover:text-[#323437] py-1.5  text-[#646669] flex justify-center items-center gap-2   px-2   font-mono  bg-[#35383c] p-1 rounded-sm " // onClick={handleLogin}
             >
               <div>
                 <svg

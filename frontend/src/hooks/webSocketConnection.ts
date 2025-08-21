@@ -15,7 +15,7 @@ export function useWebSocket() {
     const getToken = async () => {
       try {
         const res: any = await axios.get(`${BACKEND_URL}/refresh`, {
-          withCredentials: true, // Ensures cookies are sent
+          withCredentials: true,
         });
         if (res.data.token) {
           setToken(res.data.token);
@@ -27,34 +27,35 @@ export function useWebSocket() {
       }
     };
 
-    getToken().then(() => {
-      if (!token) return; // Ensure token is set before continuing
+    getToken();
+  }, [socket]);
+  useEffect(() => {
+    if (!token || socket) return;
 
-      const ws = new WebSocket(`${WEBSOCKET_URL}?token=${token}`);
+    const ws = new WebSocket(`${WEBSOCKET_URL}?token=${token}`);
 
-      ws.onopen = () => {
-        console.log("Connected to WebSocket server");
-        setSocket(() => ws);
-      };
+    ws.onopen = () => {
+      console.log("Connected to WebSocket server");
+      setSocket(() => ws);
+    };
 
-      ws.onclose = () => {
-        setSocket(() => null);
-        console.log("WebSocket connection closed");
-      };
+    ws.onclose = () => {
+      setSocket(() => null);
+      console.log("WebSocket connection closed");
+    };
 
-      const handleUnload = () => {
-        if (ws.readyState === WebSocket.OPEN) {
-          ws.close();
-          window.location.href = "/signin";
-        }
-      };
+    const handleUnload = () => {
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.close();
+        console.log("websocket closed");
+        window.location.href = "/signin";
+      }
+    };
 
-      window.addEventListener("beforeunload", handleUnload);
-
-      return () => {
-        window.removeEventListener("beforeunload", handleUnload);
-      };
-    });
+    window.addEventListener("beforeunload", handleUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleUnload);
+    };
   }, [token]);
   return { soc: socket };
 }

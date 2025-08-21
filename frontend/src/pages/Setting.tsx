@@ -6,11 +6,13 @@ import {
   ModalContent,
   ModalTrigger,
 } from "../components/ui/animated-modal";
-// import axios from "axios";
-// import { useState } from "react";
-// import { useSetRecoilState } from "recoil";
-// import { userAtom } from "../store/atoms/userAtom";
-// const BACKEND_URL = import.meta.env.VITE_BACKEND_URL as string;
+import axios from "axios";
+import { useState } from "react";
+import { useSetRecoilState } from "recoil";
+import { userAtom } from "../store/atoms/userAtom";
+import { toast, ToastContainer } from "react-toastify";
+import { ErrorAlert } from "../components/ui/ErrorAlert";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL as string;
 
 const SettingButtons = [
   {
@@ -179,55 +181,106 @@ const dangerZoneSettings = [
   },
 ];
 export default function Setting() {
-  // const setUser = useSetRecoilState(userAtom);
+  const setUser = useSetRecoilState(userAtom);
   const [searchParams, setSearchParams] = useSearchParams();
   const paramValue = searchParams.get("tab") || "account";
-  // const [updateName, setUpdateName] = useState<string>("");
-  // const [updateNamePassword, setUpdateNamePassword] = useState<string>("");
-  // async function handleUpdateName() {
-  //   console.log("Update name clicked");
-  //   if (updateNamePassword.length === 0 || updateName.length === 0) {
-  //     alert("Please fill all fields");
-  //   }
-  //   try {
-  //     const response = await axios.patch(
-  //       `${BACKEND_URL}/api/user/update`,
-  //       {
-  //         userName: updateName,
-  //         password: updateNamePassword,
-  //       },
-  //       {
-  //         withCredentials: true,
-  //       }
-  //     );
-  //     if (response.status === 200) {
-  //       alert("Name updated successfully");
-  //       setUpdateName("");
-  //       setUpdateNamePassword("");
-  //       const data = response.data as {
-  //         userName: string;
-  //         id: string;
-  //         email: string;
-  //       };
-  //       setUser({
-  //         userName: data.userName,
-  //         id: data.id,
-  //         email: data.email,
-  //       });
-  //     }
-  //   } catch (error: any) {
-  //     console.error("Error updating name:", error);
-  //     if (error.status === 401) {
-  //       alert("Unauthorized, no token in cookies");
-  //     } else if (error.status === 409) {
-  //       alert("Please enter correct password");
-  //     } else if (error.status === 404) {
-  //       alert("User not found");
-  //     } else if (error.status === 500) {
-  //       alert("Check internet connection");
-  //     }
-  //   }
-  // }
+  const [updateName, setUpdateName] = useState<string>("");
+  const [updateNamePassword, setUpdateNamePassword] = useState<string>("");
+  async function handleUpdateName() {
+    console.log("Update name clicked");
+    if (updateNamePassword.length === 0 || updateName.length === 0) {
+      return toast.error(
+        <ErrorAlert data={{ content: "Please fill all fields" }} />,
+        {
+          autoClose: 3000,
+          data: { content: "Please fill all fields" },
+          icon: false,
+          theme: "colored",
+        }
+      );
+    }
+    try {
+      const response = await axios.patch(
+        `${BACKEND_URL}/api/user/update`,
+        {
+          userName: updateName,
+          password: updateNamePassword,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      if (response.status === 200) {
+        toast.dark("User name updated!", {
+          style: {
+            border: "2px solid #3b82f6",
+            paddingInline: "10px",
+            paddingTop: 0,
+            paddingBottom: 0,
+            maxHeight: "min-content",
+            color: "#e0f2fe",
+            backgroundColor: "#1e3a8a",
+          },
+        });
+        setUpdateName("");
+        setUpdateNamePassword("");
+        const data = response.data as {
+          userName: string;
+          id: string;
+          email: string;
+        };
+        setUser({
+          userName: data.userName,
+          id: data.id,
+          email: data.email,
+        });
+      }
+    } catch (error: any) {
+      console.log(error.message, error);
+      if (error.status === 401) {
+        toast.error(
+          <ErrorAlert data={{ content: error.response.data.message }} />,
+          {
+            hideProgressBar: true,
+            data: { content: error.response.data.message },
+            icon: false,
+            theme: "colored",
+          }
+        );
+      } else if (error.status === 409) {
+        console.log("Please enter correct password");
+        toast.error(
+          <ErrorAlert data={{ content: error.response.data.message }} />,
+          {
+            hideProgressBar: true,
+            data: { content: error.response.data.message },
+            icon: false,
+            theme: "colored",
+          }
+        );
+      } else if (error.status === 404) {
+        toast.error(
+          <ErrorAlert data={{ content: error.response.data.message }} />,
+          {
+            hideProgressBar: true,
+            data: { content: error.response.data.message },
+            icon: false,
+            theme: "colored",
+          }
+        );
+      } else if (error.status === 500) {
+        toast.error(
+          <ErrorAlert data={{ content: error.response.data.message }} />,
+          {
+            hideProgressBar: true,
+            data: { content: error.response.data.message },
+            icon: false,
+            theme: "colored",
+          }
+        );
+      }
+    }
+  }
   function handleTabChange(name: string) {
     console.log("Tab changed to:", name, paramValue);
     setSearchParams({ tab: name });
@@ -235,7 +288,7 @@ export default function Setting() {
   return (
     <div className="min-h-screen relative bg-[#323437] flex flex-col flex-grow   max-h-full w-full items-center  ">
       <Navigation />
-      {/* <ToastContainer /> */}
+      <ToastContainer />
       <div className="sr-only mt-16  min-h-[100vh]  py-3 px-3 flex flex-col  h-72 max-w-7xl w-full">
         <div className=" py-2 px-3 items-center flex w-full justify-start gap-3">
           <div>
@@ -309,7 +362,7 @@ export default function Setting() {
                 </div>
                 <Modal>
                   <ModalBody className="ring-[#3c3e3f] ">
-                    {/* <ModalContent className="flex gap-3 ">
+                    <ModalContent className="flex gap-3 ">
                       <div className="text-2xl text-[#91969c] font-customFont">
                         Update name
                       </div>
@@ -335,11 +388,6 @@ export default function Setting() {
                       >
                         update name
                       </button>
-                    </ModalContent> */}
-                    <ModalContent className="flex gap-3 items-center justify-center ">
-                      <div className="text-2xl text-[#91969c] font-customFont">
-                        This feature is under development
-                      </div>
                     </ModalContent>
                   </ModalBody>
                   <ModalTrigger className=" opacity-80 dark:bg-white dark:text-black text-white flex justify-center group/modal-btn">
