@@ -163,6 +163,31 @@ export const userEvents = async (ws: userWebSocket, eventData: any) => {
       }
     }
   }
+  if (event === "send-message") {
+    const { roomId, message, userName, id } = data;
+    const clients = roomSockets.get(roomId);
+    console.log(`clients`, clients?.size);
+    if (!clients) {
+      return ws.send(
+        JSON.stringify({
+          event: "game-error",
+          data: {
+            message: "Room not found!!!",
+          },
+        })
+      );
+    }
+    clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN)
+        console.log(`sending message`, message, client.userId);
+      client.send(
+        JSON.stringify({
+          event: "get-message",
+          data: { roomId, message, userName, id },
+        })
+      );
+    });
+  }
   if (event === "join-room") {
     const { userId, roomId, email, userName } = data;
     const getRoom = await redis.get(`room:${roomId}`);
@@ -174,7 +199,15 @@ export const userEvents = async (ws: userWebSocket, eventData: any) => {
         })
       );
     }
-
+    const roomClients = roomSockets.get(roomId);
+    if (!roomClients) {
+      return ws.send(
+        JSON.stringify({
+          event: "room-error",
+          data: { message: "Room not found!" },
+        })
+      );
+    }
     const roomData = JSON.parse(getRoom);
     if (roomData.room.state !== "WAITING") {
       return ws.send(
@@ -246,6 +279,7 @@ export const userEvents = async (ws: userWebSocket, eventData: any) => {
       );
       return;
     }
+
     clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN)
         client.send(

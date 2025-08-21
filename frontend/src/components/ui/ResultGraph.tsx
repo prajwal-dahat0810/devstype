@@ -5,7 +5,6 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
- 
 } from "recharts";
 export const ResultGraph = ({ wpmData }: any) => {
   return (
@@ -13,7 +12,12 @@ export const ResultGraph = ({ wpmData }: any) => {
       <LineChart
         className=""
         data={wpmData}
-        margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+        margin={{
+          top: 5,
+          right: 10,
+          left: 3,
+          bottom: 5,
+        }}
       >
         {/* <CartesianGrid strokeDasharray="3 3" /> */}
         <XAxis
@@ -46,7 +50,6 @@ export const ResultGraph = ({ wpmData }: any) => {
             background: "#27282b",
             fontFamily: "monospace",
             color: "#d1d0c5",
-            border: "none",
           }}
           cursor={false}
         />

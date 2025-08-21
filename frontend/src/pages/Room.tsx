@@ -109,10 +109,6 @@ export default function Room() {
     const messageHandler = async function (event: { data: string }) {
       const { event: eventName, data: data } = JSON.parse(event.data);
 
-      if (eventName === "get-message") {
-        const newMessage = data.message;
-        setMessages((prev) => [...prev, newMessage]);
-      }
       if (eventName === "player-join") {
         const joinedPlayerName = user.userName;
         toast.dark(`Room Joined by ${joinedPlayerName}!`, {
@@ -324,6 +320,21 @@ export default function Room() {
         })
       );
       setMessageInput("");
+
+      socket.onmessage = async function (event: any) {
+        const { event: eventName, data: data } = JSON.parse(event.data);
+        if (eventName === "get-message") {
+          console.log(" data received:", data);
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: data.id,
+              userName: data.userName,
+              message: data.message,
+            },
+          ]);
+        }
+      };
     }
   }
 
@@ -342,18 +353,18 @@ export default function Room() {
         <div className="max-w-xl  w-full min-h-[440px]  h-[300px] mt-5  flex flex-col gap-3">
           <div className="flex font-lexand py-1 flex-col text-[#d1d0c5] font-[600] text-[2rem] px-3 ">
             <div>
-              #Room | <span>{roomId}</span>
+              Room | <span>{roomId}</span>
             </div>
             <div>
               T | <span>{wordsLimit}</span>
             </div>
           </div>
 
-          <div className="h-full  py-2  flex w-full max-h-[360px] flex-col">
-            <div className=" rounded-md  bg-[#363638] h-full max-sm:max-h-[250px] my-2 px-3 py-2 overflow-y-scroll custom-scrollbar">
+          <div className="max-h-[320px] max-sm:max-h-[350px]  py-2  flex w-full  flex-col">
+            <div className=" rounded-md  bg-[#363638] h-full max-sm:max-h-[300px] my-2  py-2 overflow-y-scroll custom-scrollbar">
               <Messages messages={messages} />
             </div>
-            <div className=" flex flex-row gap-2  justify-between">
+            <div className=" flex flex-row gap-2   justify-between">
               <input
                 placeholder="Enter a message ..."
                 className="w-full text-[.84rem] placeholder-[#515254] bg-[#2b2d30] py-2 px-2 text-[#d1d0c5] outline-none rounded-sm"
@@ -363,7 +374,7 @@ export default function Room() {
               />
               <button
                 onClick={handleMessage}
-                className="bg-green-500 hover:bg-green-600 cursor-pointer rounded-md px-2"
+                className="bg-green-500 hover:bg-green-600 cursor-pointer rounded-md px-3"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -377,23 +388,11 @@ export default function Room() {
             </div>
           </div>
         </div>
-        <div className="max-w-xs justify-between  w-full   min-h-[400px] max-h-[500px] flex flex-col  gap-3">
+        <div className="max-w-xs justify-between max-sm:mt-8 w-full   min-h-[400px] max-h-[500px] flex flex-col  gap-3">
           <div>
-            <div className="flex px-2 pt-2 items-center justify-between">
+            <div className="flex pl-2 md:pr-5 pr-2  pt-2 items-center justify-between">
               <div className=" w-max text-[#d1d0c5]">
                 Joined Typists {` (${room.players.length})`}
-              </div>
-              <div className="">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height={20}
-                  viewBox="0 0 128 128"
-                >
-                  <path
-                    fill="#686464"
-                    d="M128 53.279c0 5.043-4.084 9.136-9.117 9.136-.091 0-.164 0-.255-.018l-8.914 34.06H18.286L8.734 65.01C3.884 64.81 0 60.808 0 55.892c0-5.043 4.084-9.136 9.117-9.136 5.032 0 9.117 4.093 9.117 9.136a9.557 9.557 0 0 1-.492 2.997l22.081 12.919 18.671-34.371a9.1 9.1 0 0 1-4.267-7.729c0-5.043 4.084-9.136 9.117-9.136s9.117 4.093 9.117 9.136a9.1 9.1 0 0 1-4.267 7.729l18.671 34.371 24.05-14.07a9.164 9.164 0 0 1-1.149-4.459c0-5.062 4.084-9.136 9.117-9.136 5.033 0 9.117 4.075 9.117 9.136zm-18.286 46.835H18.286v7.314h91.429v-7.314z"
-                  />
-                </svg>
               </div>
             </div>
             <div className="flex  flex-col h-full">
@@ -423,11 +422,11 @@ export default function Room() {
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           height={20}
-                          fill="#5cc46b"
+                          className="fill-[#d1d0c5]"
                           viewBox="0 0 128 128"
                         >
                           <path
-                            fill="#5cc46b"
+                            fill="currentColor"
                             d="M128 53.279c0 5.043-4.084 9.136-9.117 9.136-.091 0-.164 0-.255-.018l-8.914 34.06H18.286L8.734 65.01C3.884 64.81 0 60.808 0 55.892c0-5.043 4.084-9.136 9.117-9.136 5.032 0 9.117 4.093 9.117 9.136a9.557 9.557 0 0 1-.492 2.997l22.081 12.919 18.671-34.371a9.1 9.1 0 0 1-4.267-7.729c0-5.043 4.084-9.136 9.117-9.136s9.117 4.093 9.117 9.136a9.1 9.1 0 0 1-4.267 7.729l18.671 34.371 24.05-14.07a9.164 9.164 0 0 1-1.149-4.459c0-5.062 4.084-9.136 9.117-9.136 5.033 0 9.117 4.075 9.117 9.136zm-18.286 46.835H18.286v7.314h91.429v-7.314z"
                           />
                         </svg>
@@ -443,7 +442,7 @@ export default function Room() {
             <div className="flex py-2    justify-around items-center">
               <button
                 onClick={handleLeaveGame}
-                className="px-6 py-2  bg-[#e2b714] hover:bg-yellow-400   text-white text-sm rounded-md font-semibold  hover:shadow-lg"
+                className="px-6 py-2 cursor-pointer  bg-[#e2b714] hover:bg-yellow-400   text-white text-sm rounded-md font-semibold  hover:shadow-lg"
               >
                 Leave Room
               </button>
@@ -451,7 +450,7 @@ export default function Room() {
                 type="button"
                 disabled={createdBy !== Number(user.id)}
                 onClick={handleStartGame}
-                className={`px-10 py-2 bg-slate-400 hover:bg-slate-500 text-white text-sm rounded-md font-semibold 
+                className={`px-10 py-2 cursor-pointer bg-slate-400 hover:bg-slate-500 text-white text-sm rounded-md font-semibold 
               hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none`}
               >
                 Start

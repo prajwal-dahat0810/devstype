@@ -9,11 +9,12 @@ import { socketAtom } from "../store/atoms/socketAtom";
 import { userAtom } from "../store/atoms/userAtom";
 import { Bounce, toast, ToastContainer } from "react-toastify";
 import { Footer } from "../components/Footer";
+import SocketLoading from "../components/ui/SocketLoading";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL as string;
 export default function Landing() {
   const gameTypeOptions = ["Words"];
-  const wordsOptions = [15];
+  const wordsOptions = [15, 30];
   const alertRef: any = useRef(null);
   const {}: any = useWebSocket();
   const [socket, setSocket] = useRecoilState(socketAtom);
@@ -218,7 +219,7 @@ export default function Landing() {
   };
 
   if (!socket) {
-    return <div>Connecting to Socket Server...</div>;
+    return <SocketLoading />;
   }
 
   return (
@@ -262,13 +263,13 @@ export default function Landing() {
                 onChange={(e) => {
                   setGameType(e.target.value);
                 }}
-                className="w-full bg-[#2f3032] text-[#d1d0c5] p-1 outline-none rounded-sm border"
+                className="w-full  bg-[#2f3032] text-[#d1d0c5] p-1 outline-none rounded-sm border"
                 name="selectedFruit"
               >
                 {gameTypeOptions.map((option) => {
                   return (
                     <option key={option} value={option}>
-                      {option}
+                      <div className="rounded-md p-3">{option}</div>
                     </option>
                   );
                 })}
