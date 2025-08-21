@@ -37,7 +37,7 @@ export default function Landing() {
         });
       })
       .catch((error) => {
-        window.location.href = "/signin";
+        console.log(error)
         if (error.response.request.status === 401) {
           window.location.href = "/signin";
         }
