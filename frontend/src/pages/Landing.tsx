@@ -39,6 +39,7 @@ export default function Landing() {
       })
       .catch((error) => {
         console.log(error);
+
         if (error.response.request.status === 401) {
           console.log("error for signout");
           window.location.href = "/signin";

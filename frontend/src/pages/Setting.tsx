@@ -414,11 +414,11 @@ export default function Setting() {
                 <Modal>
                   <ModalBody className="ring-[#3c3e3f] ">
                     <ModalContent className="flex gap-3 items-center justify-center ">
-                      <div className="text-2xl text-[#91969c] font-customFont">
-                        Api keys feature is under development
+                      <div className="text-2xl text-[#91969c] text-center font-customFont">
+                        This feature is under development
                       </div>
                     </ModalContent>
-                    {/* <ModalContent className=" sr-only flex gap-3 ">
+                    {/* <ModalContent className=" flex gap-3 ">
                       <div className="text-2xl text-[#91969c] font-customFont">
                         Update password
                       </div>
@@ -441,7 +441,7 @@ export default function Setting() {
                         className="bg-[#3c3f43] ring-none px-3 py-2 rounded-xl"
                       />
                       <button className="cursor-pointer w-full hover:bg-[#d1d0c5] bg-[#2c2e31] hover:text-[#56564e] text-[#1a1a1a] px-8  h-10 rounded-lg ">
-                        update name
+                        update password
                       </button>
                     </ModalContent> */}
                   </ModalBody>

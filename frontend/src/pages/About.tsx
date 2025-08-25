@@ -1,5 +1,11 @@
 import { Footer } from "../components/Footer";
 import Navigation from "../components/Navigation";
+import {
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalTrigger,
+} from "../components/ui/animated-modal";
 
 const ContactButtons = [
   {
@@ -103,9 +109,9 @@ export default function About() {
           <div>
             Develop by{" "}
             <span
-              onClick={() =>
-                (window.location.href = "https://x.com/DahatPrajw56411")
-              }
+              onClick={() => (
+                window.open("https://x.com/DahatPrajw56411"), "_blank"
+              )}
               className="bg-[#646669] hover:bg-[#7b7e84] hover:text-[#D1D0C5] text-[#2f3134] rounded-[2px] cursor-pointer px-1 "
             >
               Prajwal Dahat
@@ -137,24 +143,70 @@ export default function About() {
               Thanks to everyone who has supported this project. It would not be
               possible without you and your continued support.
             </div>
-            <button className="hover:bg-[#d1d0c5] hover:text-[#323437] rounded-lg bg-[#2c2e31] py-8 w-full text-[#D1D0C5] font-normal font-mono text-2xl">
-              <div className="flex gap-2 items-center justify-center ">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  className="size-8  "
-                  fill="currentColor"
-                >
-                  <path d="M10.464 8.746c.227-.18.497-.311.786-.394v2.795a2.252 2.252 0 0 1-.786-.393c-.394-.313-.546-.681-.546-1.004 0-.323.152-.691.546-1.004ZM12.75 15.662v-2.824c.347.085.664.228.921.421.427.32.579.686.579.991 0 .305-.152.671-.579.991a2.534 2.534 0 0 1-.921.42Z" />
-                  <path
-                    fill-rule="evenodd"
-                    d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v.816a3.836 3.836 0 0 0-1.72.756c-.712.566-1.112 1.35-1.112 2.178 0 .829.4 1.612 1.113 2.178.502.4 1.102.647 1.719.756v2.978a2.536 2.536 0 0 1-.921-.421l-.879-.66a.75.75 0 0 0-.9 1.2l.879.66c.533.4 1.169.645 1.821.75V18a.75.75 0 0 0 1.5 0v-.81a4.124 4.124 0 0 0 1.821-.749c.745-.559 1.179-1.344 1.179-2.191 0-.847-.434-1.632-1.179-2.191a4.122 4.122 0 0 0-1.821-.75V8.354c.29.082.559.213.786.393l.415.33a.75.75 0 0 0 .933-1.175l-.415-.33a3.836 3.836 0 0 0-1.719-.755V6Z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-                <span>support</span>
-              </div>
-            </button>
+
+            <Modal>
+              <ModalBody className="ring-[#3c3e3f] ">
+                {/* <ModalContent className="flex gap-3 items-center justify-center ">
+                  <div className="text-2xl text-[#91969c] text-center font-customFont">
+                    This feature is under development
+                  </div>
+                </ModalContent> */}
+                <ModalContent className="max-w-3xl flex gap-3 ">
+                  <div className="text-2xl text-[#91969c] font-customFont">
+                    Support Monkeytype
+                  </div>
+                  <div className="px-2">
+                    Thank you so much for thinking about supporting this
+                    project.
+                  </div>
+
+                  <button
+                    onClick={() =>
+                      window.open("https://ko-fi.com/devstype", "blank")
+                    }
+                    className="cursor-pointer w-full hover:bg-[#d1d0c5] bg-[#2c2e31] fill-[#1a1a1a] hover:fill-[#56564e] hover:text-[#56564e] text-[#1a1a1a] px-8 py-8  flex justify-center items-center rounded-lg "
+                  >
+                    <svg
+                      id="Layer_1"
+                      data-name="Layer 1"
+                      className="h-10 w-10 "
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 122.88 118.19"
+                    >
+                      <defs>
+                        <style>.cls-1</style>
+                      </defs>
+                      <title>loan</title>
+                      <path
+                        className="cls-1"
+                        d="M103.91,75.47,79.13,88.28,77.39,85,95.1,75.86l.23-.11A3.49,3.49,0,0,0,96.78,71l-.84-1.58.06,0-4.07-7.52L76.12,32.11l3.73-1.94,24.06,45.3Zm7.18,8.66h10.74a1,1,0,0,1,1,1.05v26.06a1.07,1.07,0,0,1-1,1.06H111.09a1.07,1.07,0,0,1-1.06-1.06V85.18a1.06,1.06,0,0,1,1.06-1.05ZM106.59,110V86.47H96c-4.49.81-9,3.24-13.47,6.07H74.31c-3.73.22-5.68,4-2.06,6.48,2.89,2.11,6.69,2,10.59,1.64,2.69-.13,2.81,3.48,0,3.49-1,.08-2-.15-3-.15-4.87,0-8.87-.94-11.32-4.78l-1.24-2.88L55.09,90.28c-6.12-2-10.47,4.39-6,8.84a160.53,160.53,0,0,0,27.24,16c6.75,4.11,13.51,4,20.25,0l10-5.15ZM14.49,9.5a1.9,1.9,0,0,1,.31-1.18C15.45,7.45,17,7.7,18,7.7a14.49,14.49,0,0,0,3.08-.24A35.78,35.78,0,0,0,25.48,6c3.73-1.34,7.08-2.33,10.64-3.62,8-2.87,5.6-3.49,13.81,0A89.24,89.24,0,0,1,60.24,7.55a6.45,6.45,0,0,1,1.31.94,6.19,6.19,0,0,1,1,1.32c3.14,4.57,5.83,9.2,8.41,13.83.87,1.63,1.23,3.17.64,4.14-2.43,4-6.8-1.69-11.5-5.46-2-1.59-4.67-3-7-4.61-3-1.24-4.36-2.42-7.55-3.09-4.89-.42-5.29,6.6,1.14,6.86C51,21.65,60,25.61,62.56,29.25c2.36,3.4,1.06,6.74-3.74,6.62l-4-.75c-6.39-1.2-6.21-1.44-12.86-.2-3.57.66-7.31,1.35-11,.66-2.24-.41-3.42-1.31-5.42-2.84a17.81,17.81,0,0,0-3.18-2.22,12,12,0,0,0-2.92-1.24c-1.53-.37-3.69.15-4.58-1.17a2.4,2.4,0,0,1-.37-1.31V9.5ZM1,5.16H11a1,1,0,0,1,1,1V30.44a1,1,0,0,1-1,1H1a1,1,0,0,1-1-1V6.15a1,1,0,0,1,1-1ZM69,50.75a6.79,6.79,0,1,1-6.78,6.78A6.79,6.79,0,0,1,69,50.75Zm3.12-19L94,73,67.6,86.66,43.89,42.07l8.33-4.31.29.06,5.75,1.07a2.63,2.63,0,0,0,.49,0,10.47,10.47,0,0,0,3.12-.35L54.31,42.5a4.4,4.4,0,0,1-1.88,5.93L67.34,76a4.4,4.4,0,0,1,5.93,1.88l10.44-5.41a4.39,4.39,0,0,1,1.88-5.92L70.69,39h0a4.4,4.4,0,0,1-5.93-1.89l-.14.08a6,6,0,0,0,1.45-1.79,6.37,6.37,0,0,0,.71-2.79,7,7,0,0,0,0-1c2,1,3.75,1.18,5.35.15Z"
+                      />
+                    </svg>
+                    Donate
+                  </button>
+                </ModalContent>
+              </ModalBody>
+              <ModalTrigger className=" opacity-80 dark:bg-white dark:text-black text-white flex justify-center group/modal-btn">
+                <button className="hover:bg-[#d1d0c5] hover:text-[#323437] rounded-lg bg-[#2c2e31] py-8 w-full text-[#D1D0C5] font-normal font-mono text-2xl">
+                  <div className="flex gap-2 items-center justify-center ">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      className="size-8  "
+                      fill="currentColor"
+                    >
+                      <path d="M10.464 8.746c.227-.18.497-.311.786-.394v2.795a2.252 2.252 0 0 1-.786-.393c-.394-.313-.546-.681-.546-1.004 0-.323.152-.691.546-1.004ZM12.75 15.662v-2.824c.347.085.664.228.921.421.427.32.579.686.579.991 0 .305-.152.671-.579.991a2.534 2.534 0 0 1-.921.42Z" />
+                      <path
+                        fill-rule="evenodd"
+                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v.816a3.836 3.836 0 0 0-1.72.756c-.712.566-1.112 1.35-1.112 2.178 0 .829.4 1.612 1.113 2.178.502.4 1.102.647 1.719.756v2.978a2.536 2.536 0 0 1-.921-.421l-.879-.66a.75.75 0 0 0-.9 1.2l.879.66c.533.4 1.169.645 1.821.75V18a.75.75 0 0 0 1.5 0v-.81a4.124 4.124 0 0 0 1.821-.749c.745-.559 1.179-1.344 1.179-2.191 0-.847-.434-1.632-1.179-2.191a4.122 4.122 0 0 0-1.821-.75V8.354c.29.082.559.213.786.393l.415.33a.75.75 0 0 0 .933-1.175l-.415-.33a3.836 3.836 0 0 0-1.719-.755V6Z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    <span>support</span>
+                  </div>
+                </button>
+              </ModalTrigger>
+            </Modal>
           </div>
         </div>
         <div className="mt-16 h-full py-3 px-3   max-w-5xl w-full">

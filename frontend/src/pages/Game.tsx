@@ -307,7 +307,6 @@ export default function Game() {
         hideProgressBar
       />
       <div className="max-w-5xl w-full min-w-[300px] flex justify-center flex-col items-center px-2  mt-12 ">
-        <div className="absolute left-5 top-16">timer {timer}</div>
         <div className="min-h-48 h-full w-full  flex flex-grow flex-col items-center px-3 py-2">
           <div className=" w-min flex sm:my-4 max-sm:sr-only rounded-sm items-center justify-center  bg-[#2d2d33]">
             {units.map((unit) => {
@@ -485,9 +484,9 @@ export default function Game() {
           </div>
         </div>
         <div
-          className={` max-sm:${
-            Number(wordsLimit) === 15 ? "mt-20" : "mt-56"
-          } mt-2 h-[400px] max-h-full px-3 pt-3 w-full   `}
+          className={` ${
+            Number(wordsLimit) === 15 ? "max-sm:mt-36" : "max-sm:mt-52"
+          } h-[400px] max-h-full px-3 pt-3 w-full   `}
         >
           <div className=" overflow-y-scroll custom-scrollbar max-w-3xl w-full  h-full">
             {progressData &&

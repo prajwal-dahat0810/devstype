@@ -8,7 +8,6 @@ import { ErrorAlert } from "./ui/ErrorAlert";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL as string;
 
 export default function Navigation() {
-  
   // const [userName, setuserName] = useState("");
   const user = useRecoilValue(userAtom);
   const [openModal, setOpenModal] = useState(false);
@@ -213,7 +212,7 @@ export default function Navigation() {
           </div>
           <div
             onClick={handleModal}
-            className="flex gap-1 fill-[#686464] hover:fill-gray-200 transition-colors duration-200 cursor-pointer items-center "
+            className="flex gap-1 fill-[#686464] hover:fill-gray-200  hover:text-gray-300 text-[#686464] transition-colors duration-200 cursor-pointer items-center "
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -226,7 +225,7 @@ export default function Navigation() {
                 clipRule="evenodd"
               />
             </svg>
-            <div className="min-w-20  max-w-52 fill-gray-300 hover:text-gray-300 transition-colors duration-200 max-sm:sr-only text-[#686464]">
+            <div className="min-w-20  max-w-52 fill-gray-300  transition-colors duration-200 max-sm:sr-only ">
               {user.userName !== "" ? user.userName : "Anonymous"}
             </div>
             <svg

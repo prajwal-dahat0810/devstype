@@ -76,7 +76,7 @@ const mobileButtons: unitType[] = [
     name: "github",
   },
   {
-    link: "",
+    link: "https://discord.gg/UWVZy3KE",
     svgIcon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -150,7 +150,7 @@ export const Footer = () => {
               onClick={() => {
                 // console.log("link", typeof element.link);
                 if (element.link !== "") {
-                  window.location.href = `${element.link}`;
+                  window.open(element.link, "_blank");
                 }
               }}
               className="flex cursor-pointer items-center justify-center gap-1"
