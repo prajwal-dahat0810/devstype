@@ -7,7 +7,7 @@ import { socketAtom } from "../store/atoms/socketAtom";
 import { userAtom } from "../store/atoms/userAtom";
 import { paragraphAtom } from "../store/atoms/roomAtom";
 import { Footer } from "../components/Footer";
-import { Bounce, toast, ToastContainer } from "react-toastify";
+import { toast } from "sonner";
 export type unitType = {
   svgIcon: ReactElement;
   name: string;
@@ -241,23 +241,10 @@ export default function Game() {
       }
       if (parsedData.event === "game-end") {
         setIsFinish(true);
-        const toastId = toast.dark(
-          parsedData.message,
-
-          {
-            style: {
-              border: "2px solid #3b82f6",
-              paddingInline: "10px",
-              paddingTop: 0,
-              paddingBottom: 0,
-              maxHeight: "min-content",
-              color: "#e0f2fe",
-              backgroundColor: "#1e3a8a",
-            },
-          }
-        );
-        await new Promise((r) => setTimeout(r, 2000));
-
+        const toastId = toast.warning(parsedData.data.message, {
+          toasterId: "global",
+        });
+        await new Promise((r) => setTimeout(r, 3000));
         toast.dismiss(toastId);
         navigate("/");
       }
@@ -266,15 +253,7 @@ export default function Game() {
           parsedData.message,
 
           {
-            style: {
-              border: "2px solid #3b82f6",
-              paddingInline: "10px",
-              paddingTop: 0,
-              paddingBottom: 0,
-              maxHeight: "min-content",
-              color: "#e0f2fe",
-              backgroundColor: "#1e3a8a",
-            },
+            toasterId: "global",
           }
         );
         await new Promise((r) => setTimeout(r, 2000));
@@ -299,13 +278,6 @@ export default function Game() {
     // <div className="min-h-screen bg-white flex flex-col   max-h-full w-full items-center  ">
     <div className="min-h-screen relative bg-[#323437] flex flex-col   max-h-full w-full items-center  ">
       <Navigation />
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        closeOnClick
-        transition={Bounce}
-        hideProgressBar
-      />
       <div className="max-w-5xl w-full min-w-[300px] flex justify-center flex-col items-center px-2  mt-12 ">
         <div className="min-h-48 h-full w-full  flex flex-grow flex-col items-center px-3 py-2">
           <div className=" w-min flex sm:my-4 max-sm:sr-only rounded-sm items-center justify-center  bg-[#2d2d33]">
@@ -413,7 +385,7 @@ export default function Game() {
                         }
                         if (currentWordIndex === index + 14) {
                           if (charIndex === inputText.length)
-                            classname = `before:border-l-1 ${
+                            classname = `before:border-l-3 ${
                               currentWordIndex !== 14
                                 ? ""
                                 : "before:animate-ping"
@@ -440,7 +412,7 @@ export default function Game() {
                         }
                       } else if (currentWordIndex === index) {
                         if (charIndex === inputText.length)
-                          classname = `before:border-l-1 ${
+                          classname = `before:border-l-3 ${
                             currentWordIndex !== 0 ? "" : "before:animate-ping"
                           }  before:border-amber-200`;
                         // "before:border-l-1 before:animate-ping before:border-amber-200 ";

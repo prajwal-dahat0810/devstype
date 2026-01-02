@@ -5,10 +5,11 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { socketAtom } from "../store/atoms/socketAtom";
 import { userAtom } from "../store/atoms/userAtom";
 import { paragraphAtom } from "../store/atoms/roomAtom";
-import { Bounce, toast, ToastContainer } from "react-toastify";
+// import { Bounce, toast, ToastContainer } from "react-toastify";
 import { useEffect, useRef, useState } from "react";
 import { Messages, messageType } from "../components/Messages";
 import { Footer } from "../components/Footer";
+import { toast } from "sonner";
 export default function Room() {
   const navigate = useNavigate();
   const setParagraph = useSetRecoilState(paragraphAtom);
@@ -24,19 +25,11 @@ export default function Room() {
   const user = useRecoilValue(userAtom);
   // const { socket, setSocket }: any = useWebSocket();
   const socket: any = useRecoilValue(socketAtom);
-
+  let loadId: string | number;
   function handleLeaveGame() {
-    const loadId = toast.loading("Leaving room...", {
-      style: {
-        border: "1px solid #4CAF50",
-        paddingBlock: "10px",
-        maxHeight: "min-content",
-        color: "#4CAF50",
-        backgroundColor: "purple",
-        fontWeight: "bold",
-      },
+    loadId = toast.loading("Leaving room...", {
+      toasterId: "global",
     });
-
     if (socket) {
       // Remove existing listener before adding a new one
       socket.removeEventListener("message", handleMessage);
@@ -49,48 +42,44 @@ export default function Room() {
       );
 
       // Define the handler function separately
-      function handleMessage(event: { data: any }) {
-        toast.dismiss(loadId);
+      async function handleMessage(event: { data: string }) {
         const { event: eventName, data: data } = JSON.parse(event.data);
+        console.log(JSON.stringify(event));
+        if (eventName === "room-deleted") {
+          await new Promise((r) => setTimeout(r, 1000));
+          roomLeavedRef.current = toast.warning(data.message, {
+            toasterId: "global",
+            id: loadId,
+          });
 
+          toast.dismiss(roomLeavedRef.current);
+          roomLeavedRef.current = null;
+          navigate("/");
+        }
         if (eventName === "room-leaved") {
-          roomLeavedRef.current = toast.dark(
+          roomLeavedRef.current = toast.info(
             `Room leaved by ${user.userName.slice(0, 20)}...`,
             {
-              style: {
-                border: "2px solid #3b82f6",
-                paddingInline: "10px",
-                paddingTop: 0,
-                paddingBottom: 0,
-                maxHeight: "min-content",
-                color: "#e0f2fe",
-                backgroundColor: "#1e3a8a",
-              },
+              toasterId: "global",
+              id: loadId,
             }
           );
 
           setTimeout(() => {
             roomLeavedRef.current = null;
             setRoom(() => data.room);
+
             navigate("/");
           }, 3000);
           return;
         }
 
         if (eventName === "admin-leaved") {
-          toast.dismiss(loadId);
-          roomLeavedRef.current = toast.dark(data.message, {
-            style: {
-              border: "2px solid #3b82f6",
-              paddingInline: "10px",
-              paddingTop: 0,
-              paddingBottom: 0,
-              maxHeight: "min-content",
-              color: "#e0f2fe",
-              backgroundColor: "#1e3a8a",
-            },
+          roomLeavedRef.current = toast.info(data.message, {
+            toasterId: "global",
           });
 
+          toast.dismiss(roomLeavedRef.current);
           setRoom(data.room);
           roomLeavedRef.current = null;
           navigate("/");
@@ -110,59 +99,33 @@ export default function Room() {
       const { event: eventName, data: data } = JSON.parse(event.data);
 
       if (eventName === "player-join") {
-        const joinedPlayerName = user.userName;
-        toast.dark(`Room Joined by ${joinedPlayerName}!`, {
-          style: {
-            border: "2px solid #3b82f6",
-            paddingInline: "10px",
-            paddingTop: 0,
-            paddingBottom: 0,
-            maxHeight: "min-content",
-            color: "#e0f2fe",
-            backgroundColor: "#1e3a8a",
-          },
+        console.log(data);
+
+        toast.info(data.message, {
+          toasterId: "global",
+          id: loadId,
         });
         setRoom(() => data.room);
       }
-      if (eventName === "room-deleted") {
-        roomLeavedRef.current = toast.dark(
-          data.message,
 
-          {
-            style: {
-              border: "2px solid #3b82f6",
-              paddingInline: "10px",
-              paddingTop: 0,
-              paddingBottom: 0,
-              maxHeight: "min-content",
-              color: "#e0f2fe",
-              backgroundColor: "#1e3a8a",
-            },
-          }
-        );
-        await new Promise((r) => setTimeout(r, 2000));
-        navigate("/");
+      if (eventName === "game-started") {
+        await new Promise((p) => setTimeout(p, 1000));
+
+        // await new Promise((p) => setTimeout(p, 1000));
+        const roomId = data.room.roomId;
+        setParagraph(data.paragraph);
+        navigate(`/room/${roomId}?wordsLimit=${data.wordsLimit}`);
       }
       if (eventName === "admin-room-leaved") {
-        const playerLeaved = data.player.userName;
-        roomLeavedRef.current = toast.dark(
-          `Room admin ${playerLeaved}Leaved!`,
-
+        const adminName = data.player.userName;
+        roomLeavedRef.current = toast.warning(
+          `Room admin ${adminName}Leaved!`,
           {
-            style: {
-              border: "2px solid #3b82f6",
-              paddingInline: "10px",
-              paddingTop: 0,
-              paddingBottom: 0,
-              maxHeight: "min-content",
-              color: "#e0f2fe",
-              backgroundColor: "#1e3a8a",
-            },
+            toasterId: "global",
+            id: loadId,
           }
         );
-        //
-        await new Promise((r) => setTimeout(r, 2000));
-
+        await new Promise((r) => setTimeout(r, 1000));
         toast.dismiss(roomLeavedRef.current);
         roomLeavedRef.current = null;
         setGameType(data.gameType);
@@ -170,77 +133,41 @@ export default function Room() {
         setRoom(() => data.room);
       }
       if (eventName === "admin-leaved") {
-        roomLeavedRef.current = toast.dark(
-          `New admin ${data.admin}`,
-
-          {
-            style: {
-              border: "2px solid #3b82f6",
-              paddingInline: "10px",
-              paddingTop: 0,
-              paddingBottom: 0,
-              maxHeight: "min-content",
-              color: "#e0f2fe",
-              backgroundColor: "#1e3a8a",
-            },
-          }
-        );
-        await new Promise((r) => setTimeout(r, 2000));
-
-        toast.dismiss(roomLeavedRef.current);
+        // roomLeavedRef.current = toast.info(`New admin ${data.admin}`, {
+        //   toasterId: "global",
+        //   id: loadId,
+        // });
+        // await new Promise((r) => setTimeout(r, 2000));
+        toast.dismiss(loadId);
         roomLeavedRef.current = null;
         navigate("/");
       }
       if (eventName === "room-leave") {
         const leavedPlayer = data.player;
-        roomLeavedRef.current = toast.dark(
+        roomLeavedRef.current = toast.info(
           `Room Leaved by ${leavedPlayer.userName}!`,
-
           {
-            style: {
-              border: "2px solid #3b82f6",
-              paddingInline: "10px",
-              paddingTop: 0,
-              paddingBottom: 0,
-              maxHeight: "min-content",
-              color: "#e0f2fe",
-              backgroundColor: "#1e3a8a",
-            },
+            toasterId: "global",
+            id: loadId,
           }
         );
-        await new Promise((r) => setTimeout(r, 2000));
-
+        await new Promise((r) => setTimeout(r, 1000));
         toast.dismiss(roomLeavedRef.current);
         roomLeavedRef.current = null;
         setRoom(data.room);
       }
 
       if (eventName === "room-error") {
-        roomLeavedRef.current = toast.dark(
-          data.message,
+        roomLeavedRef.current = toast.error(data.message, {
+          toasterId: "global",
+          id: loadId,
+        });
 
-          {
-            style: {
-              border: "2px solid #3b82f6",
-              paddingInline: "10px",
-              paddingTop: 0,
-              paddingBottom: 0,
-              maxHeight: "min-content",
-              color: "#e0f2fe",
-              backgroundColor: "#1e3a8a",
-            },
-          }
-        );
         await new Promise((r) => setTimeout(r, 2000));
 
         toast.dismiss(roomLeavedRef.current);
         roomLeavedRef.current = null;
         setRoom(data.room);
-      }
-      if (eventName === "game-started") {
-        const roomId = data.room.roomId;
-        setParagraph(data.paragraph);
-        navigate(`/room/${roomId}?wordsLimit=${data.wordsLimit}`);
       }
     };
     socket.addEventListener("message", messageHandler);
@@ -250,6 +177,9 @@ export default function Room() {
   }, []);
 
   function handleStartGame() {
+    loadId = toast.loading("Initializing game ...", {
+      toasterId: "global",
+    });
     if (socket) {
       socket.send(
         JSON.stringify({
@@ -261,42 +191,30 @@ export default function Room() {
         const { event: eventName, data: data } = JSON.parse(event.data);
         if (eventName === "game-error") {
           const toastId = toast.error(data.message, {
-            style: {
-              border: "2px solid #3b82f6",
-              paddingInline: "10px",
-              paddingTop: 0,
-              paddingBottom: 0,
-              maxHeight: "min-content",
-              color: "#e0f2fe",
-              backgroundColor: "#1e3a8a",
-            },
+            toasterId: "global",
+            id: loadId,
           });
-          await new Promise((r) => setTimeout(r, 2000));
+
+          await new Promise((r) => setTimeout(r, 1000));
           toast.dismiss(toastId);
         }
         if (eventName === "game-started") {
+          await new Promise((p) => setTimeout(p, 1000));
+          toast.warning("Game starting...", {
+            toasterId: "global",
+            id: loadId,
+          });
+          // await new Promise((p) => setTimeout(p, 1000));
           const roomId = data.room.roomId;
           setParagraph(data.paragraph);
           navigate(`/room/${roomId}?wordsLimit=${data.wordsLimit}`);
         }
         if (eventName === "room-error-creating") {
-          roomLeavedRef.current = toast.dark(
-            data.message,
-
-            {
-              style: {
-                border: "2px solid #3b82f6",
-                paddingInline: "10px",
-                paddingTop: 0,
-                paddingBottom: 0,
-                maxHeight: "min-content",
-                color: "#e0f2fe",
-                backgroundColor: "#1e3a8a",
-              },
-            }
-          );
+          roomLeavedRef.current = toast.error(data.message, {
+            toasterId: "global",
+            id: loadId,
+          });
           await new Promise((r) => setTimeout(r, 2000));
-
           toast.dismiss(roomLeavedRef.current);
           roomLeavedRef.current = null;
           navigate(`/`);
@@ -307,6 +225,13 @@ export default function Room() {
     }
   }
   function handleMessage() {
+    if (messageInput.length === 0) {
+      toast.warning("message is empty", {
+        toasterId: "global",
+        id: loadId,
+      });
+      return;
+    }
     if (socket !== null) {
       socket.send(
         JSON.stringify({
@@ -321,7 +246,7 @@ export default function Room() {
       );
       setMessageInput("");
 
-      socket.onmessage = async function (event: any) {
+      socket.onmessage = async function (event: { data: string }) {
         const { event: eventName, data: data } = JSON.parse(event.data);
         if (eventName === "get-message") {
           console.log(" data received:", data);
@@ -340,15 +265,7 @@ export default function Room() {
 
   return (
     <div className="min-h-screen  flex flex-col bg-[#27282b] px-2   max-h-full min-w-full items-center  ">
-      {/* <div className="min-h-screen  h-full px-2  bg-[#27282b]   min-w-full   "> */}
       <Navigation />
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        closeOnClick
-        transition={Bounce}
-        hideProgressBar
-      />
       <div className="mt-14 gap-3  max-w-5xl w-full max-sm:flex-col max-sm:items-center  mb-2 py-3 rounded-md font-roboto px-2 flex-grow bg-[#3c3e42]  flex  justify-evenly items-stretch ">
         <div className="max-w-xl  w-full min-h-[440px]  h-[300px] mt-5  flex flex-col gap-3">
           <div className="flex font-lexand py-1 flex-col text-[#d1d0c5] font-[600] text-[2rem] px-3 ">
@@ -359,9 +276,8 @@ export default function Room() {
               T | <span>{wordsLimit}</span>
             </div>
           </div>
-
-          <div className="max-h-[320px] max-sm:max-h-[350px]  py-2  flex w-full  flex-col">
-            <div className=" rounded-md  bg-[#363638] h-full max-sm:max-h-[300px] my-2  py-2 overflow-y-scroll custom-scrollbar">
+          <div className="max-h-[320px] max-sm:max-h-[360px]  py-2  flex w-full  flex-col">
+            <div className=" rounded-md  bg-[#363638] h-full  max-sm:max-h-[360px] my-2  py-2 overflow-y-scroll custom-scrollbar">
               <Messages messages={messages} />
             </div>
             <div className=" flex flex-row gap-2   justify-between">
@@ -401,9 +317,8 @@ export default function Room() {
                 <div>#username</div>
                 <div>Created By</div>
               </div>
-
               {/* min-h-[120px] max-h-[330px] */}
-              <div className="mt-3    overflow-y-scroll max-sm:h-full   text-[#D1D0C5] custom-scrollbar">
+              <div className="mt-3 overflow-y-scroll max-sm:h-full text-[#D1D0C5] custom-scrollbar">
                 {room.players.map((player) => {
                   return (
                     <div
@@ -415,14 +330,14 @@ export default function Room() {
                       <div>{player.id}</div>
                       <div>{player.userName}</div>
                       <div
-                        className={`rounded-full  mr-3 ${
+                        className={`rounded-full text-[#37ea99]  mr-3 ${
                           player.id === createdBy ? "opacity-100" : "opacity-0"
                         } `}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           height={20}
-                          className="fill-[#d1d0c5]"
+                          className="fill-[#37ea99]"
                           viewBox="0 0 128 128"
                         >
                           <path
@@ -437,8 +352,7 @@ export default function Room() {
               </div>
             </div>
           </div>
-
-          <div className="  flex flex-col   ">
+          <div className="flex flex-col ">
             <div className="flex py-2    justify-around items-center">
               <button
                 onClick={handleLeaveGame}
@@ -451,7 +365,8 @@ export default function Room() {
                 disabled={createdBy !== Number(user.id)}
                 onClick={handleStartGame}
                 className={`px-10 py-2 cursor-pointer bg-slate-400 hover:bg-slate-500 text-white text-sm rounded-md font-semibold 
-              hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none`}
+                              hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed
+                              disabled:pointer-events-none`}
               >
                 Start
               </button>

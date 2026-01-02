@@ -7,9 +7,18 @@ import { roomAtom, roomDataType } from "../store/atoms/testAtom";
 import Navigation from "../components/Navigation";
 import { socketAtom } from "../store/atoms/socketAtom";
 import { userAtom } from "../store/atoms/userAtom";
-import { Bounce, toast, ToastContainer } from "react-toastify";
+// import { Bounce, toast, ToastContainer } from "react-toastify";
 import { Footer } from "../components/Footer";
 import SocketLoading from "../components/ui/SocketLoading";
+import { toast } from "sonner";
+import { Button } from "../components/ui/stateful-button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/Select";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL as string;
 export default function Landing() {
@@ -24,7 +33,7 @@ export default function Landing() {
   const [wordsLimit, setWordsLimit] = useState(wordsOptions[0]);
   const [, setRoom] = useRecoilState(roomAtom);
   const [roomInputId, setRoomInputId] = useState("");
-
+  console.log(wordsLimit, gameType);
   useEffect(() => {
     axios
       .get(`${BACKEND_URL}/me`, {
@@ -48,16 +57,6 @@ export default function Landing() {
   }, [setSocket]);
 
   const createRoom = () => {
-    const loadId = toast.loading("Creating Room...", {
-      style: {
-        border: "1px solid #22c55e",
-        paddingBlock: "10px",
-        maxHeight: "min-content",
-        color: "#22c55e",
-        backgroundColor: "#27282b",
-        fontWeight: "bold",
-      },
-    });
     if (socket) {
       socket.send(
         JSON.stringify({
@@ -66,20 +65,20 @@ export default function Landing() {
         })
       );
       socket.onmessage = async function (event) {
-        toast.dismiss(loadId);
         const { event: eventName, data: data } = JSON.parse(event.data);
         if (eventName === "room-created") {
-          toast.dark("Room Created !", {
-            style: {
-              border: "2px solid #3b82f6",
-              paddingInline: "10px",
-              paddingTop: 0,
-              paddingBottom: 0,
-              maxHeight: "min-content",
-              color: "#e0f2fe",
-              backgroundColor: "#1e3a8a",
-            },
-          });
+          // toast.dark("Room Created !", {
+          //   style: {
+          //     border: "2px solid #3b82f6",
+          //     paddingInline: "10px",
+          //     paddingTop: 0,
+          //     paddingBottom: 0,
+          //     maxHeight: "min-content",
+          //     color: "#e0f2fe",
+          //     backgroundColor: "#1e3a8a",
+          //   },
+          // });
+          toast.success("Room created !");
           const roomData: roomDataType = data.room;
           setRoom({
             roomId: roomData.roomId,
@@ -95,18 +94,19 @@ export default function Landing() {
     }
   };
 
-  const joinRoom = () => {
+  const joinRoom = async () => {
+    if (roomInputId.length === 0) {
+      toast.error("Please enter RoomId ...", {
+        toasterId: "global",
+      });
+      return;
+    }
     if (socket) {
       const loadId = toast.loading("Joining Room...", {
-        style: {
-          border: "1px solid #3b82f6",
-          paddingBlock: "10px",
-          maxHeight: "min-content",
-          color: "#e0f2fe",
-          backgroundColor: "#27282b",
-          fontWeight: "bold",
-        },
+        toasterId: "global",
       });
+      await new Promise((r) => setTimeout(r, 1000));
+
       socket.send(
         JSON.stringify({
           event: "join-room",
@@ -120,28 +120,17 @@ export default function Landing() {
       );
       socket.onmessage = async function (event) {
         const { event: eventName, data: data } = JSON.parse(event.data);
-        //// write a logic to only 10 player allow in a room
-        toast.dismiss(loadId);
+        //// written a logic to only 10 player allow in a room
+
         if (eventName === "player-joined") {
-          toast.dismiss(loadId);
           setGameType(data.gameType);
           setWordsLimit(data.wordsLimit);
           const roomData: roomDataType = data.room;
-          alertRef.current = toast.dark(
-            data.message ? data.message : "Room Joined !",
-
-            {
-              style: {
-                border: "2px solid #3b82f6",
-                paddingInline: "10px",
-                paddingTop: 0,
-                paddingBottom: 0,
-                maxHeight: "min-content",
-                color: "#e0f2fe",
-                backgroundColor: "#1e3a8a",
-              },
-            }
+          alertRef.current = toast.success(
+            `${data.message ? data.message : "Room joined! "}`,
+            { id: loadId, toasterId: "global" }
           );
+
           await new Promise((r) => setTimeout(r, 2000));
           setRoom({
             roomId: roomData.roomId,
@@ -160,21 +149,12 @@ export default function Landing() {
         }
 
         if (eventName === "room-joined-already") {
-          toast.dismiss(loadId);
           const roomData: roomDataType = data.room;
-          alertRef.current = toast.dark(
-            data.message ? data.message : "Room Joined !",
-
+          alertRef.current = toast.info(
+            data.message ? data.message : "Room already joined",
             {
-              style: {
-                border: "2px solid #3b82f6",
-                paddingInline: "10px",
-                paddingTop: 0,
-                paddingBottom: 0,
-                maxHeight: "min-content",
-                color: "#e0f2fe",
-                backgroundColor: "#1e3a8a",
-              },
+              id: loadId,
+              toasterId: "global",
             }
           );
           await new Promise((r) => setTimeout(r, 2000));
@@ -196,26 +176,13 @@ export default function Landing() {
           return;
         }
         if (eventName === "room-error") {
-          alertRef.current = toast.error(
-            data.message,
-
-            {
-              style: {
-                border: "2px solid #3b82f6",
-                paddingInline: "10px",
-                paddingTop: 0,
-                paddingBottom: 0,
-                maxHeight: "min-content",
-                color: "#e0f2fe",
-                backgroundColor: "#1e3a8a",
-              },
-            }
-          );
+          alertRef.current = toast.warning(data.message, {
+            toasterId: "global",
+            id: loadId,
+          });
           await new Promise((r) => setTimeout(r, 2000));
           toast.dismiss(alertRef.current);
           alertRef.current = null;
-          // navigate(`/room?gameType=${gameType}&wordsLimit=${wordsLimit}`);
-          // navigate(`/`);
         }
       };
     }
@@ -228,13 +195,6 @@ export default function Landing() {
   return (
     <div className="min-h-screen  flex flex-col bg-[#27282b] px-2   max-h-full min-w-full items-center  ">
       <Navigation />{" "}
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        closeOnClick
-        transition={Bounce}
-        hideProgressBar
-      />
       <div className="mt-14 gap-3  max-w-5xl w-full  items-center  max-sm:flex-col mx-4 mb-2 py-3 rounded-md font-roboto px-4 flex-grow bg-[#3c3e42]  flex  justify-evenly  ">
         <div className="max-w-xl  w-full min-h-[400px] h-full flex flex-col gap-4">
           <div className=" h-full">
@@ -262,43 +222,53 @@ export default function Landing() {
 
           <div className="bg-[#373739]  min-h-56 flex flex-col justify-between max-sm:h-full py-2 rounded-md">
             <div className="flex py-3  flex-row mx-2 gap-3  justify-between">
-              <select
-                onChange={(e) => {
-                  setGameType(e.target.value);
+              <Select
+                onValueChange={(e) => {
+                  setGameType(e);
                 }}
-                className="w-full  bg-[#2f3032] text-[#d1d0c5] p-1 outline-none rounded-sm border"
-                name="selectedFruit"
               >
-                {gameTypeOptions.map((option) => {
-                  return (
-                    <option key={option} value={option}>
-                      <div className="rounded-md p-3">{option}</div>
-                    </option>
-                  );
-                })}
-              </select>
-
-              <select
-                className="w-full  p-1 border bg-[#313132]  text-[#d1d0c5] rounded-sm  outline-none "
-                name="selectedFruit"
-                lang=""
-                onChange={(e) => setWordsLimit(Number(e.currentTarget.value))}
-              >
-                {wordsOptions.map((option) => {
-                  return (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  );
-                })}
-              </select>
+                <SelectTrigger className="w-full  bg-[#2f3032] text-[#d1d0c5] p-1 outline-none rounded-sm border">
+                  <SelectValue color="white " placeholder="Game Type" />
+                </SelectTrigger>
+                <SelectContent className=" border-0">
+                  {gameTypeOptions.map((option) => {
+                    return (
+                      <SelectItem
+                        className="bg-[#d1d0d5] font-mono"
+                        value={`${option}`}
+                      >
+                        {option}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+              <Select onValueChange={(e) => setWordsLimit(Number(e))}>
+                <SelectTrigger className="w-full  bg-[#2f3032] text-[#d6d0d4] p-1 outline-none rounded-sm border">
+                  <SelectValue placeholder="Game Time" />
+                </SelectTrigger>
+                <SelectContent className=" border-0">
+                  {wordsOptions.map((option) => {
+                    return (
+                      <SelectItem
+                        className="bg-white font-mono"
+                        value={`${option}`}
+                      >
+                        {option}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
             </div>
-
-            <button
+            <Button
+              className=" font-custom cursor-pointer flex items-center justify-center gap-1 mt-2 bg-gradient-to-r from-green-400 via-emerald-500  to-emerald-400 to-80% text-[#e5e5e3] p-1 mx-3 rounded-md"
               onClick={createRoom}
-              className=" font-custom cursor-pointer flex items-center justify-center gap-1 mt-2 bg-gradient-to-r from-green-400 to-emerald-600 to-90% text-[#e5e5e3] p-1 mx-3 rounded-md"
             >
-              <span>
+              Create room
+            </Button>
+            {/* svg room create */}
+            {/* <span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
@@ -311,13 +281,8 @@ export default function Landing() {
                     clipRule="evenodd"
                   />
                 </svg>
-              </span>
-              Create a Room
-            </button>
+              </span> */}
           </div>
-          {/* <button onClick={joinRoom}>Join Room</button> */}
-          {/* <button onClick={startGame}>Start Game</button>
-          <button onClick={getRoomDetails}>Get room</button> */}
         </div>
         <div className="max-w-xl  w-full min-h-[400px] h-full flex flex-col gap-4">
           <div className=" h-full">
@@ -347,7 +312,6 @@ export default function Landing() {
               Join room{" "}
             </div>
           </div>
-          {/* <div className="bg-[#373739]  min-h-56 flex flex-col justify-between max-sm:h-full py-2 rounded-md"> */}
           <div className="flex justify-between bg-[#373739]  min-h-36 p-4 rounded-md flex-col">
             <input
               onChange={(e) => setRoomInputId(e.target.value)}
@@ -357,7 +321,7 @@ export default function Landing() {
             />
             <button
               onClick={joinRoom}
-              className=" flex items-center gap-2 justify-center cursor-pointer bg-[#4179e8] bg-linear-to-t from-sky-500 to-indigo-600 text-[#e5e5e3] p-1  rounded-md"
+              className=" flex items-center gap-2 justify-center cursor-pointer  bg-gradient-to-r from-blue-500 via-blue-600  to-blue-500 to-90% text-[#e5e5e3] p-1  rounded-md"
             >
               <span>
                 <svg

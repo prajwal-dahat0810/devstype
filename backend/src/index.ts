@@ -26,9 +26,10 @@ export const clearIntervals = new Map<string, NodeJS.Timeout>();
 const JWT_SECRET = process.env.JWT_SECRET;
 app.use(cookieParser());
 app.use(express.json());
+const origins = [process.env.FRONTED_URL as string, "http://localhost:5173"];
 app.use(
   cors({
-    origin: process.env.FRONTED_URL || "http://localhost:5173",
+    origin: origins,
     credentials: true,
   })
 );

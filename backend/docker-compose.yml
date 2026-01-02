@@ -34,7 +34,7 @@ services:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/mydatabase
       - JWT_SECRET=mysecret
       - REDIS_URL=redis://redis:6379  # Updated: Use service name instead of localhost
-      - FRONTEND_URL=http://localhost:5173  # Fixed: Removed extra space
+      - FRONTEND_URL=http://localhost:5173  
     ports:
       - "8080:8080"
     volumes:

@@ -1,12 +1,9 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-
+import { toast } from "sonner";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL as string;
-// import { Bounce, ToastContainer, toast } from "react-toastify";
-import { ErrorAlert } from "../components/ui/ErrorAlert";
 import { Footer } from "../components/Footer";
-import { Bounce, toast, ToastContainer } from "react-toastify";
 export const contextClass = {
   success: "bg-blue-600",
   error: "bg-red-100",
@@ -24,360 +21,177 @@ export default function () {
   const [userName, setUsername] = useState<string>("");
   const navigate = useNavigate();
 
-  (message: string) =>
-    toast.error(message, {
-      position: "top-right",
-      autoClose: 4000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-      transition: Bounce,
-    });
-
   async function handleSignup() {
-    toast.loading("Loading…", {
-      className: "bg-red-500     w-full",
-    });
-    if (
-      signupEmail === "" ||
-      signupPassword === "" ||
-      signupPassword.length <= 5 ||
-      userName === ""
-    ) {
-      if (userName === "") {
-        const loadId = toast.error(
-          () => <ErrorAlert data={{ content: "Enter correct username" }} />,
-          {
-            autoClose: 3000,
-            progress: 0.3,
-            icon: false,
-            theme: "colored",
-          }
-        );
-        setTimeout(() => {
-          toast.dismiss(loadId);
-        }, 3000);
-        return;
-      }
-      if (signupEmail === "") {
-        const loadId = toast.error(
-          () => <ErrorAlert data={{ content: "Enter valid email" }} />,
-          {
-            autoClose: 3000,
-            progress: 0.3,
-            icon: false,
-            theme: "colored",
-          }
-        );
-        setTimeout(() => {
-          toast.dismiss(loadId);
-        }, 3000);
-        return;
-      }
-      if (signupPassword === "" || signupPassword.length <= 5) {
-        if (signupPassword.length <= 5) {
-          const toastId = toast.error(
-            <ErrorAlert data={{ content: "Please correct password" }} />,
-            {
-              autoClose: 3000,
-              data: {
-                content: " Password must be at least 5 characters long!",
-              },
-              progress: 0.3,
-              icon: false,
-              theme: "colored",
-            }
-          );
-          setTimeout(() => {
-            toast.dismiss(toastId);
-          }, 3000);
-          return;
-        }
-
-        const toastId = toast.error(
-          <ErrorAlert data={{ content: "Please Enter password" }} />,
-          {
-            // autoClose: 3000,
-            data: { content: "Please Enter password" },
-            progress: 0.3,
-            icon: false,
-            theme: "colored",
-          }
-        );
-        setTimeout(() => {
-          toast.dismiss(toastId);
-        }, 3000);
-      }
-      return;
-    }
-    try {
-      const loadId = toast.loading("Sign up...", {
-        style: {
-          border: "2px solid #3b82f6",
-          paddingInline: "10px",
-          paddingTop: 0,
-          paddingBottom: 0,
-          maxHeight: "min-content",
-          color: "#e0f2fe",
-          backgroundColor: "#1e3a8a",
-        },
-      });
-      const response: any = await axios.post(
-        `${BACKEND_URL}/signup`,
-        {
-          userName,
-          password: signupPassword,
-          email: signupEmail,
-        },
-        {
-          withCredentials: true,
-          headers: {
-            Authorization: "application/json",
-          },
-        }
-      );
-
-      if (
-        response.data.status === 401 ||
-        response.data.status === 409 ||
-        response.data.status === 400 ||
-        response.data.status === 500
-      ) {
-        toast.dismiss(loadId);
-        console.log("error", response.data);
-        toast.error(
-          <ErrorAlert data={{ content: response.data.message }} />,
-
-          {
-            autoClose: 3000,
-            progress: 0.3,
-            icon: false,
-            data: { content: response.data.message },
-            theme: "colored",
-          }
-        );
-
-        return;
-      }
-      if (response.status === 200) {
-        setSignupEmail("");
-        setSignupPassword("");
-        setUsername("");
-        toast.dismiss(loadId);
-        toast.dark("User created!", {
-          style: {
-            border: "2px solid #3b82f6",
-            paddingInline: "10px",
-            paddingTop: 0,
-            paddingBottom: 0,
-            maxHeight: "min-content",
-            color: "#e0f2fe",
-            backgroundColor: "#1e3a8a",
-          },
-        });
-        toast.dark("Signin now !", {
-          style: {
-            border: "2px solid #3b82f6",
-            paddingInline: "10px",
-            paddingTop: 0,
-            paddingBottom: 0,
-            maxHeight: "min-content",
-            color: "#e0f2fe",
-            backgroundColor: "#1e3a8a",
-          },
-        });
-      }
-    } catch (error: any) {
-      toast.dismiss();
-      console.log("catch", error);
-      if (error.response)
+    const promise: Promise<{ message: string }> = new Promise(
+      (resolve, reject) => {
         if (
-          error.response.status === 401 ||
-          error.response.status === 400 ||
-          error.response.status === 500 ||
-          error.response.status === 409
+          signupEmail === "" ||
+          signupPassword === "" ||
+          signupPassword.length <= 5 ||
+          userName === ""
         ) {
-          toast.error(
-            <ErrorAlert data={{ content: error.response.data.message }} />,
-            {
-              progress: 0.3,
-              data: { content: error.response.data.message },
-              icon: false,
+          if (userName === "") {
+            return reject({ message: "Enter username (at least 4 character)" });
+          }
+          if (signupEmail === "") {
+            return reject({ message: "Enter valid email" });
+          }
 
-              theme: "colored",
+          if (signupPassword === "" || signupPassword.length <= 5) {
+            if (signupPassword === "") {
+              return reject({
+                message: "Please enter password",
+              });
+            } else {
+              return reject({
+                message: " Password must be at least 5 characters long!",
+              });
             }
-          );
-          return;
+          }
         }
-      if (error.name === "AxiosError") {
-        toast.error(<ErrorAlert data={{ content: error.message }} />, {
-          progress: 0.3,
-          data: { content: error.message },
-          icon: false,
+        if (signupEmail.match("@") === null) {
+          return reject({
+            message: "Please enter valid email",
+          });
+        }
+        axios
+          .post(
+            `${BACKEND_URL}/signup`,
+            {
+              userName,
+              password: signupPassword,
+              email: signupEmail,
+            },
+            {
+              withCredentials: true,
+              headers: {
+                Authorization: "application/json",
+              },
+            }
+          )
+          .then((data) => {
+            setSignupEmail("");
+            setSignupPassword("");
+            setUsername("");
+            console.log(data, "daa");
+            if (data.status === 200) {
+              resolve({ message: "User created successfully!" });
+            }
+          })
+          .catch((error) => {
+            if (error.message === "Network Error")
+              reject({ message: error.message });
 
-          theme: "colored",
-        });
-        return;
+            reject({
+              message: error.response.data.message,
+              status: error.response.status,
+            });
+          });
       }
-    }
+    );
+
+    toast.promise(promise, {
+      loading: "Loading...",
+      success: (data: { message: string }) => {
+        setTimeout(() => {
+          toast.info("Login now !");
+        }, 1000);
+        return `${data.message}`;
+      },
+      error: (data: { message: string; status: number }) => {
+        return `${data.message}`;
+      },
+      toasterId: window.innerWidth > 425 ? "bigScreen" : "smallScreen",
+    });
   }
 
   async function handleLogin() {
-    if (email === "" || password === "" || password.length <= 5) {
-      if (email === "") {
-        const loadId = toast.error(
-          () => <ErrorAlert data={{ content: "Enter correct Email" }} />,
-          {
-            autoClose: 3000,
-            progress: 0.3,
-            icon: false,
-            theme: "colored",
+    const promise: Promise<{ message: string }> = new Promise(
+      (resolve, reject) => {
+        if (email === "" || password === "" || password.length <= 5) {
+          if (email === "") {
+            reject({ message: "Please enter email" });
           }
-        );
-        setTimeout(() => {
-          toast.dismiss(loadId);
-        }, 3000);
-        return;
-      }
-      if (password === "" || password.length <= 5) {
-        if (password.length <= 5) {
-          const toastId = toast.error(
-            <ErrorAlert data={{ content: "Please Enter password" }} />,
+          if (password === "") {
+            reject({ message: "Please enter password" });
+          }
+          if (password.length <= 5) {
+            return reject({ message: "Password should be min 5 character" });
+          }
+        }
+        if (email.match("@") === null) {
+          return reject({ message: "Enter a valid email" });
+        }
+        axios
+          .post(
+            `${BACKEND_URL}/signin`,
             {
-              autoClose: 3000,
-              data: {
-                content: " Password must be at least 5 characters long!",
+              email,
+              password,
+            },
+            {
+              withCredentials: true,
+              headers: {
+                Authorization: "application/json",
               },
-              progress: 0.3,
-              icon: false,
-              theme: "colored",
             }
-          );
-          setTimeout(() => {
-            toast.dismiss(toastId);
-          }, 3000);
-          return;
-        }
-        const toastId = toast.error(
-          <ErrorAlert data={{ content: "Please Enter password" }} />,
-          {
-            // autoClose: 3000,
-            data: { content: "Please Enter password" },
-            progress: 0.3,
-            icon: false,
-            theme: "colored",
-          }
-        );
-        setTimeout(() => {
-          toast.dismiss(toastId);
-        }, 3000);
-      }
-      return;
-    }
-    try {
-      const loadId = toast.loading("Signing in...", {
-        style: {
-          border: "2px solid #3b82f6",
-          paddingInline: "10px",
-          paddingTop: 0,
-          paddingBottom: 0,
-          maxHeight: "min-content",
-          color: "#e0f2fe",
-          backgroundColor: "#1e3a8a",
-        },
-      });
-      const response: any = await axios.post(
-        `${BACKEND_URL}/signin`,
-        {
-          email,
-          password,
-        },
-        {
-          withCredentials: true,
-          headers: {
-            Authorization: "application/json",
-          },
-        }
-      );
-      // toast.dismiss(loadId);
-      if (
-        response.data.status === 401 ||
-        response.data.status === 400 ||
-        response.data.status === 409 ||
-        response.data.status === 500
-      ) {
-        toast.dismiss(loadId);
-        toast.error(<ErrorAlert data={{ content: response.data.message }} />, {
-          autoClose: 3000,
-          progress: 0.3,
-          icon: false,
-          data: { content: response.data.message },
-          theme: "colored",
-        });
-        return;
-      }
-      if (response.status === 200) {
-        toast.dismiss(loadId);
-        toast.dark("Signin successfully !", {
-          style: {
-            border: "2px solid #3b82f6",
-            paddingInline: "10px",
-            paddingTop: 0,
-            paddingBottom: 0,
-            maxHeight: "min-content",
-            color: "#e0f2fe",
-            backgroundColor: "#1e3a8a",
-          },
-        });
-        await new Promise((r) => setTimeout(r, 2000));
-        navigate("/");
-      }
-    } catch (error: any) {
-      toast.dismiss();
-      console.log("catch", error);
-      if (error.response)
-        if (
-          error.response.status === 401 ||
-          error.response.status === 400 ||
-          error.response.status === 409 ||
-          error.response.status === 500
-        ) {
-          toast.error(
-            <ErrorAlert data={{ content: error.response.data.message }} />,
-            {
-              progress: 0.3,
-              data: { content: error.response.data.message },
-              icon: false,
-              theme: "colored",
+          )
+          .then((res) => {
+            console.log(res.data);
+            if (res.status === 200) {
+              resolve({ message: "Signin successfully !" });
+              navigate("/");
             }
-          );
-          return;
-        }
-      if (error.name === "AxiosError") {
-        toast.error(<ErrorAlert data={{ content: error.message }} />, {
-          progress: 0.3,
-          data: { content: error.message },
-          icon: false,
-          theme: "colored",
-        });
-        return;
+          })
+          .catch((err) => {
+            console.log(err);
+            if (err.message === "Network Error")
+              reject({ message: err.message });
+
+            reject({
+              message: err.response.data.message,
+              status: err.response.status,
+            });
+          });
       }
-    }
+    );
+    toast.promise(promise, {
+      loading: "Loading...",
+      success: (data: { message: string }) => {
+        return `${data.message}`;
+      },
+      error: (data: { message: string; status: number }) => {
+        return `${data.message}`;
+      },
+      toasterId: window.innerWidth > 425 ? "bigScreen" : "smallScreen",
+    });
   }
 
   return (
     <div className="min-h-[100vh]  relative bg-[#323437] flex flex-col flex-grow justify-between  max-h-full w-full items-center  ">
-      {/* <Navigation /> */}
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        closeOnClick
-        transition={Bounce}
-        hideProgressBar
+      {/* <Toaster
+        id="smallScreen"
+        toastOptions={{
+          classNames: {
+            toast: "!bg-[#323437] !border-2 !border[#6cb4ee]",
+            success: "!bg-[#7FD88B]/9 !border-2 !border-[#7fd88b] !text-white ",
+            error: "!bg-[#FF6B6B]/9 !border-2 !border-[#ff6b6b] !text-white",
+            loading: "!bg-[#545f69]/9 !border-2 !border-[#6CB4EE] !text-white",
+          },
+        }}
+        position="top-center"
       />
+      <Toaster
+        id="bigScreen"
+        toastOptions={{
+          classNames: {
+            toast: "!bg-[#323437] !border-2 !border[#6cb4ee]",
+            success: "!bg-[#7FD88B]/9 !border-2 !border-[#7fd88b] !text-white ",
+            error: "!bg-[#FF6B6B]/9 !border-2 !border-[#ff6b6b] !text-white",
+            loading: "!bg-[#545f69]/9 !border-2 !border-[#6CB4EE] !text-white",
+          },
+        }}
+      /> */}
       <div className=" min-h-80  max-sm:min-h-max grid col-span-full my-4   w-full max-w-5xl">
         <div className="col-start-1 max-sm:mt-10 col-span-1 max-sm:col-start-1 max-sm:row-start-2 max-sm:col-span-2 flex flex-col  max-w-xl items-center justify-center ">
           <div className="flex  gap-3 py-4   justify-center items-center max-w-[300px] w-full  flex-col">

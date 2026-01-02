@@ -7,15 +7,15 @@ export type messageType = {
 export const Messages = ({ messages }: { messages: messageType[] }) => {
   console.log("Messages component rendered with messages:", messages);
   return (
-    <div className="w-full px-3 py-2 min-h-56 flex gap-3 flex-col overflow-y-scroll  custom-scrollbar ">
+    <div className="w-full h-full px-3 py-2 min-h-56 flex gap-3 flex-col overflow-y-scroll  custom-scrollbar ">
       {messages.length === 0 ? (
-        <div className="w-full h-full min-h-56  gap-3 text-[#D1D0C5]  flex ">
+        <div className="w-full h-full   gap-3 text-[#D1D0C5]  flex ">
           No messages yet...
         </div>
       ) : (
         messages.map((message: messageType, index: number) => {
           return (
-            <div key={index} className="w-full   gap-3   flex ">
+            <div key={index} className="w-full h-full   gap-3   flex ">
               <div className="w-9 bg-[#484b49] text-[#D1D0C5] h-9 items-center justify-center flex rounded-full ">
                 {message.userName ? message.userName.toUpperCase()[0] : "A"}
               </div>
