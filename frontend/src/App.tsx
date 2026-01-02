@@ -10,12 +10,12 @@ import About from "./pages/About";
 import History from "./pages/History";
 import Setting from "./pages/Setting";
 import { Analytics } from "@vercel/analytics/react";
-// import { ToastContainer } from "react-toastify";
 import { Toaster } from "sonner";
 import Maintenance from "./components/Maintenance";
+const isMaintenance = import.meta.env.VITE_MAINTENANCE_MODE as string;
 function App() {
-  const isMaintenance = import.meta.env.VITE_MAINTENANCE_MODE as string;
-  if (isMaintenance) {
+  console.log(typeof isMaintenance);
+  if (isMaintenance === "true") {
     return (
       <>
         <Maintenance />
