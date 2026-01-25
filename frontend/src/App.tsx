@@ -1,6 +1,5 @@
 import "./App.css";
 import { RecoilRoot } from "recoil";
-
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Signin from "./pages/Signin";
@@ -12,6 +11,8 @@ import Setting from "./pages/Setting";
 import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "sonner";
 import Maintenance from "./components/Maintenance";
+import TotalPlayersPage from "./pages/TotalPlayers";
+import NotFoundPage from "./pages/NotPageFound";
 const isMaintenance = import.meta.env.VITE_MAINTENANCE_MODE as string;
 function App() {
   console.log(typeof isMaintenance);
@@ -40,6 +41,20 @@ function App() {
         position={window.innerWidth > 425 ? "top-right" : "top-center"}
       />
       <Toaster
+        id="room"
+        toastOptions={{
+          classNames: {
+            toast: "!bg-[#323437] !border-2 !border[#6cb4ee]",
+            success: "!bg-[#7FD88B]/9 !border-2 !border-[#7fd88b] !text-white ",
+            error: "!bg-[#FF6B6B]/9 !border-2 !border-[#ff6b6b] !text-white",
+            loading: "!bg-[#545f69]/9 !border-2 !border-[#6CB4EE] !text-white",
+            warning: "!bg-[#F5C542]/9 !border-2 !border-[#f5c542] !text-white",
+            info: "!bg-[#6CB4EE]/9 !border-2 !border-[#6cb4ee] !text-white",
+          },
+        }}
+        position={window.innerWidth > 425 ? "top-left" : "bottom-center"}
+      />
+      <Toaster
         id="smallScreen"
         toastOptions={{
           classNames: {
@@ -66,6 +81,7 @@ function App() {
       <RecoilRoot>
         <BrowserRouter>
           <Routes>
+            <Route path="/players" element={<TotalPlayersPage />} />
             <Route path="/room" element={<Room />} />
             <Route path="/signin" element={<Signin />} />
             <Route path="/" element={<Landing />} />
@@ -73,6 +89,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/account-settings" element={<Setting />} />
             <Route path="/room/:id" element={<Game />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>
       </RecoilRoot>

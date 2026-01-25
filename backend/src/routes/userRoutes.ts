@@ -36,7 +36,7 @@ userRouter.get(
     return res.status(200).json({
       token: token,
     });
-  }
+  },
 );
 
 userRouter.post(
@@ -96,7 +96,7 @@ userRouter.post(
         error: error,
       });
     }
-  }
+  },
 );
 userRouter.patch(
   "/api/user/update",
@@ -138,7 +138,7 @@ userRouter.patch(
       }
       const isCorrectPassword = await bcrypt.compare(
         password,
-        userPassword.password
+        userPassword.password,
       );
       if (!isCorrectPassword) {
         return res.status(409).json({
@@ -179,7 +179,7 @@ userRouter.patch(
         error: error,
       });
     }
-  }
+  },
 );
 
 userRouter.post(
@@ -211,7 +211,7 @@ userRouter.post(
         }
         const authenticated = await bcrypt.compare(
           password,
-          isUserExist.password
+          isUserExist.password,
         );
         if (!authenticated) {
           return res.status(409).json({
@@ -220,7 +220,7 @@ userRouter.post(
         }
         const token = jwt.sign(
           { userId: isUserExist.id },
-          JWT_SECRET as string
+          JWT_SECRET as string,
         );
         res.cookie("token", token, {
           httpOnly: true,
@@ -244,7 +244,7 @@ userRouter.post(
         error: error,
       });
     }
-  }
+  },
 );
 
 userRouter.get("/logout", async (req: Request, res: Response): Promise<any> => {
@@ -281,6 +281,18 @@ userRouter.get("/logout", async (req: Request, res: Response): Promise<any> => {
   }
 });
 
+userRouter.get("/users", async (req: Request, res: Response) => {
+  try {
+    const totalPlayers = await prisma.player.count();
+    console.log(totalPlayers);
+    res.status(200).json({ count: totalPlayers });
+  } catch (err) {
+    res.status(500).json({
+      message: "Error while getting players",
+      error: err,
+    });
+  }
+});
 userRouter.get("/me", async (req: Request, res: Response): Promise<any> => {
   const token = await req.cookies.token;
   if (!token) {

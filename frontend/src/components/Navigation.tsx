@@ -36,7 +36,7 @@ export default function Navigation() {
               color: "#e0f2fe",
               backgroundColor: "#1e3a8a",
             },
-          }
+          },
         );
         await new Promise((r) => setTimeout(r, 2000));
         window.location.href = "/signin";
@@ -196,8 +196,8 @@ export default function Navigation() {
           </div>
         </div>
         <div className=" flex gap-3 items-center ">
-          <div className="cursor-pointer">
-            <svg
+          <div onClick={() => navigate("/players")} className="cursor-pointer">
+            {/* <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="#686464"
@@ -208,6 +208,28 @@ export default function Navigation() {
                 d="M5.25 9a6.75 6.75 0 0 1 13.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 0 1-.297 1.206c-1.544.57-3.16.99-4.831 1.243a3.75 3.75 0 1 1-7.48 0 24.585 24.585 0 0 1-4.831-1.244.75.75 0 0 1-.298-1.205A8.217 8.217 0 0 0 5.25 9.75V9Zm4.502 8.9a2.25 2.25 0 1 0 4.496 0 25.057 25.057 0 0 1-4.496 0Z"
                 clipRule="evenodd"
               />
+            </svg> */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="#686464"
+              stroke="fill-gray-200"
+              strokeWidth={1.8}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="size-4"
+            >
+              {/* Center user */}
+              <circle cx="12" cy="7" r="3" />
+              <path d="M5.5 20c0-3.6 3.1-6 6.5-6s6.5 2.4 6.5 6" />
+
+              {/* Left user */}
+              <circle cx="5" cy="9" r="2" />
+              <path d="M1.5 20c0-2.5 2-4.5 4.5-4.5" />
+
+              {/* Right user */}
+              <circle cx="19" cy="9" r="2" />
+              <path d="M18 15.5c2.5 0 4.5 2 4.5 4.5" />
             </svg>
           </div>
           <div
